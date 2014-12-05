@@ -105,10 +105,12 @@ cmd_frame_t rcvTestCmdAnswer()
 	
 	while(rcvAnswerFlag == 0)
 	{		
-		rcvByte = usart_getchar_timeout( TESTS_EXEC_CTRL_UART );
+		//rcvByte = usart_getchar_timeout( TESTS_EXEC_CTRL_UART );
+		rcvByte = usart_getchar( TESTS_EXEC_CTRL_UART );
 		
 		if(rcvByte == USART_TIMEOUT || rcvByte == USART_FAILURE)
 		{
+			print_dbg("\n\ntests_execution_control - rcvTestCmdAnswer - USART_TIMEOUT OR USART_FAILURE");
 			initTestsExecContrInterface(); /* Reinicia a interface */
 			cmdAwsFrameRcv.cmdCode = 0;
 			cmdAwsFrameRcv.paramSize = 0;

@@ -29,13 +29,13 @@
       <framework-data>
   <options>
     <option id="avr32.drivers.gpio" value="Add" config="" content-id="Atmel.ASF" />
+    <option id="avr32.drivers.twim" value="Add" config="" content-id="Atmel.ASF" />
+    <option id="avr32.drivers.twis" value="Add" config="" content-id="Atmel.ASF" />
     <option id="avr32.drivers.usart" value="Add" config="" content-id="Atmel.ASF" />
     <option id="common.boards" value="Add" config="" content-id="Atmel.ASF" />
     <option id="common.services.basic.clock" value="Add" config="" content-id="Atmel.ASF" />
     <option id="common.services.delay" value="Add" config="" content-id="Atmel.ASF" />
     <option id="avr32.services.storage.dlmalloc" value="Add" config="" content-id="Atmel.ASF" />
-    <option id="avr32.drivers.twim" value="Add" config="" content-id="Atmel.ASF" />
-    <option id="avr32.drivers.twis" value="Add" config="" content-id="Atmel.ASF" />
     <option id="common.applications.user_application" value="Add" config="" content-id="Atmel.ASF" />
   </options>
   <configurations>
@@ -375,6 +375,12 @@
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="src\i2c_tests.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="src\sd_tests.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="src\sd_tests.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="src\tcc_test_controller.h">

@@ -31,6 +31,13 @@ void manage_command()
 	bool cmd_recognized = false;
 	command_buffer[free_index] = '\0';
 	
+	if( strcmp( command_buffer, "reset" ) == 0 )
+	{
+		general_initialize();
+		print_dbg("\n==============================\nTCC Test Controller\n==============================\n");
+		cmd_recognized = true;
+	}
+	
 	if( strcmp( command_buffer, "i2c test all" ) == 0 )
 	{
 		i2c_test_all();
@@ -46,6 +53,36 @@ void manage_command()
 	if( strcmp( command_buffer, "i2c test 2" ) == 0 )
 	{
 		i2c_test_02();
+		cmd_recognized = true;
+	}
+	
+	if( strcmp( command_buffer, "sd test all" ) == 0 )
+	{
+		sd_test_all();
+		cmd_recognized = true;
+	}
+	
+	if( strcmp( command_buffer, "sd test 1" ) == 0 )
+	{
+		sd_test_01();
+		cmd_recognized = true;
+	}
+	
+	if( strcmp( command_buffer, "sd test 2" ) == 0 )
+	{
+		sd_test_02();
+		cmd_recognized = true;
+	}
+	
+	if( strcmp( command_buffer, "sd test 3" ) == 0 )
+	{
+		sd_test_03();
+		cmd_recognized = true;
+	}
+	
+	if( strcmp( command_buffer, "sd test 4" ) == 0 )
+	{
+		sd_test_04();
 		cmd_recognized = true;
 	}
 	

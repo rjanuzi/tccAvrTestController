@@ -69,7 +69,7 @@ src/i2c_tests.d src/i2c_tests.o src/i2c_tests.o: ../src/i2c_tests.c \
  ../src/ASF/common/utils/interrupt/interrupt_avr32.h \
  ../src/ASF/avr32/utils/preprocessor/tpaste.h \
  ../src/ASF/avr32/drivers/intc/intc.h \
- ../src/ASF/avr32/drivers/gpio/gpio.h \
+ ../src/ASF/avr32/drivers/gpio/gpio.h ../src/sd_tests.h \
  c:\program\ files\ (x86)\atmel\atmel\ toolchain\avr32\ gcc\native\3.4.1057\avr32-gnu-toolchain\bin\../lib/gcc/avr32/4.4.7/../../../../avr32/include/string.h \
  c:\program\ files\ (x86)\atmel\atmel\ toolchain\avr32\ gcc\native\3.4.1057\avr32-gnu-toolchain\bin\../lib/gcc/avr32/4.4.7/../../../../avr32/include/sys/string.h \
  c:\program\ files\ (x86)\atmel\atmel\ toolchain\avr32\ gcc\native\3.4.1057\avr32-gnu-toolchain\bin\../lib/gcc/avr32/4.4.7/../../../../avr32/include/stdio.h \
@@ -242,6 +242,8 @@ c:\program\ files\ (x86)\atmel\atmel\ toolchain\avr32\ gcc\native\3.4.1057\avr32
 ../src/ASF/avr32/drivers/intc/intc.h:
 
 ../src/ASF/avr32/drivers/gpio/gpio.h:
+
+../src/sd_tests.h:
 
 c:\program\ files\ (x86)\atmel\atmel\ toolchain\avr32\ gcc\native\3.4.1057\avr32-gnu-toolchain\bin\../lib/gcc/avr32/4.4.7/../../../../avr32/include/string.h:
 

@@ -18,6 +18,9 @@
 #include <delay.h>
 #include <dlmalloc.h>
 
+#define PARAM_TEST_PASS 0xAA
+#define PARAM_TEST_FAIL 0xFF
+
 typedef struct __attribute__ ((__packed__)) {
 	uint16_t cmdCode;
 	uint16_t testNumber;

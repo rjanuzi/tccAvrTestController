@@ -134,19 +134,25 @@ bool i2c_test_01()
 	if(ansFrame.cmdCode != 0)
 	{
 		if( ansFrame.params[0] == PARAM_TEST_FAIL )
+		{
 			result = false;
+			print_dbg( "\n\nFAIL" );
+		}
 		else
+		{
 			result = true;
+			print_dbg( "\n\nPASS" );
+		}
 		
 		print_dbg("\n\nTest answer received: ");
 		printfCmd(ansFrame);
 		freeCmdFrame(ansFrame);
 	}
-	
-	if(result == true)
-		print_dbg( "\n\nPASS" );
 	else
+	{
 		print_dbg( "\n\nFAIL" );
+		result = false;
+	}
 	
 	return result;
 }
@@ -184,19 +190,25 @@ bool i2c_test_02()
 	if(ansFrame.cmdCode != 0)
 	{
 		if( ansFrame.params[0] == PARAM_TEST_FAIL )
+		{
 			result = false;
+			print_dbg( "\n\nFAIL" );
+		}
 		else
+		{
 			result = true;
+			print_dbg( "\n\nPASS" );
+		}
 		
 		print_dbg("\n\nTest answer received: ");
 		printfCmd(ansFrame);
 		freeCmdFrame(ansFrame);
 	}
-	
-	if(result == true)
-		print_dbg( "\n\nPASS" );
 	else
+	{
 		print_dbg( "\n\nFAIL" );
+		result = false;
+	}
 	
 	return result;
 }

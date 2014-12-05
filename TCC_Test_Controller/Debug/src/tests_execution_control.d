@@ -77,6 +77,7 @@ src/tests_execution_control.d src/tests_execution_control.o \
  ../src/ASF/avr32/boards/stk600/rcuc3c0/stk600_rcuc3c0.h \
  ../src/ASF/avr32/boards/stk600/rcuc3c0/led.h \
  ../src/ASF/avr32/drivers/twis/twis.h ../src/config/conf_twis.h \
+ ../src/sd_tests.h \
  c:\program\ files\ (x86)\atmel\atmel\ toolchain\avr32\ gcc\native\3.4.1057\avr32-gnu-toolchain\bin\../lib/gcc/avr32/4.4.7/../../../../avr32/include/string.h \
  c:\program\ files\ (x86)\atmel\atmel\ toolchain\avr32\ gcc\native\3.4.1057\avr32-gnu-toolchain\bin\../lib/gcc/avr32/4.4.7/../../../../avr32/include/sys/string.h \
  c:\program\ files\ (x86)\atmel\atmel\ toolchain\avr32\ gcc\native\3.4.1057\avr32-gnu-toolchain\bin\../lib/gcc/avr32/4.4.7/../../../../avr32/include/stdio.h \
@@ -260,6 +261,8 @@ c:\program\ files\ (x86)\atmel\atmel\ toolchain\avr32\ gcc\native\3.4.1057\avr32
 ../src/ASF/avr32/drivers/twis/twis.h:
 
 ../src/config/conf_twis.h:
+
+../src/sd_tests.h:
 
 c:\program\ files\ (x86)\atmel\atmel\ toolchain\avr32\ gcc\native\3.4.1057\avr32-gnu-toolchain\bin\../lib/gcc/avr32/4.4.7/../../../../avr32/include/string.h:
 
