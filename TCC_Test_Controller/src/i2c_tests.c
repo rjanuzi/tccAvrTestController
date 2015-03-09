@@ -109,11 +109,11 @@ bool i2c_test_01()
 	print_dbg("\n\n==============================\nExecutando i2c teste 01...\n==============================\n");
 	
 	uint8_t sendBuffer[5] = {0x03, 0xFF, 0xEF, 0x3F, 0x23};
-	int i, aux, testNumber = 1, paramsSize = 5;
+	int i, aux, testType = TEST_TYPE_M_RX, paramsSize = 5;
 	cmd_frame_t cmdFrame, ansFrame;
 	bool result;
 	
-	cmdFrame = newEmptyTestCmdFrame(testNumber, paramsSize);
+	cmdFrame = newEmptyTestCmdFrame(testType, paramsSize);
 	cmdFrame.data[0] = 0x03;
 	cmdFrame.data[1] = 0xFF;
 	cmdFrame.data[2] = 0xEF;

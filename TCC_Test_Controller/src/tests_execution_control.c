@@ -21,7 +21,7 @@ void printfCmd(cmd_frame_t frame)
 	int i;
 	char* textAux;
 
-	sprintf(textAux, "\nCmd code: 0x%x\nTest Number: %x\nData Size: %x\nData:", frame.magicCode, frame.testNumber, frame.dataSize);
+	sprintf(textAux, "\nCmd code: 0x%x\nTest Type: %x\nData Size: %x\nData:", frame.magicCode, frame.testType, frame.dataSize);
 	print_dbg(textAux);
 
 	for( i = 0; i < frame.dataSize; i++)
@@ -40,12 +40,12 @@ void initTestsExecContrInterface()
 		gpio_set_pin_low( ITASAT_LED1 );
 }
 
-cmd_frame_t newEmptyTestCmdFrame(uint16_t testNumber, uint8_t paramSize)
+cmd_frame_t newEmptyTestCmdFrame(uint8_t testType, uint8_t paramSize)
 {
 	cmd_frame_t newFrame;
 	
 	newFrame.magicCode = 0x3C7E;
-	newFrame.testNumber = testNumber;
+	newFrame.testType = testType;
 	newFrame.dataSize = paramSize;
 	
 	if( paramSize != 0 )
@@ -60,7 +60,7 @@ void freeCmdFrame(cmd_frame_t frame)
 		dlfree(frame.data);
 	frame.magicCode = 0;
 	frame.dataSize = 0;
-	frame.testNumber = 0;
+	frame.testType = 0;
 }
 
 void sendTestCmdFrame(cmd_frame_t frame)
@@ -75,9 +75,7 @@ void sendTestCmdFrame(cmd_frame_t frame)
 	usart_putchar( TESTS_EXEC_CTRL_UART, aux);
 	
 	/* Send testNumber */
-	aux = (frame.testNumber>>8);
-	usart_putchar( TESTS_EXEC_CTRL_UART, aux);
-	aux = (frame.testNumber&0x000000FF);
+	aux = frame.testType;
 	usart_putchar( TESTS_EXEC_CTRL_UART, aux);
 	
 	/* Send paramSize */
@@ -97,8 +95,8 @@ cmd_frame_t rcvTestCmdAnswer()
 	//Frame 0xE7C3 + 2_Bytes_Test_Number + 2_Bytes_N_Data + N_Data_N_Bytes
 	int rcvByte = 0;
 	char* textAux;
-	uint8_t rcvAnswerFlag = 0, automataState = 1;
-	uint16_t c = 0, N = 0, testCaseNumber = 0;
+	uint8_t rcvAnswerFlag = 0, automataState = 1, testType;
+	uint16_t c = 0, dataSize = 0;
 	cmd_frame_t cmdAwsFrameRcv;
 	
 	while(rcvAnswerFlag == 0)
@@ -112,7 +110,7 @@ cmd_frame_t rcvTestCmdAnswer()
 			initTestsExecContrInterface(); /* Reinicia a interface */
 			cmdAwsFrameRcv.magicCode = 0;
 			cmdAwsFrameRcv.dataSize = 0;
-			cmdAwsFrameRcv.testNumber = 0;
+			cmdAwsFrameRcv.testType = 0;
 			return cmdAwsFrameRcv;
 		}
 
@@ -136,24 +134,18 @@ cmd_frame_t rcvTestCmdAnswer()
 			{
 			case 0:
 				/* Recebendo o MSByte do testCaseNumber */
-				testCaseNumber = (rcvByte<<8);
+				testType = rcvByte;
 				c++;
 				break;
 
 			case 1:
-				/* Recebendo o LSByte do testCaseNumber */
-				testCaseNumber |= rcvByte;
-				c++;
-				break;
-
-			case 2:
 				/* Recebendo o MSByte do N */
-				N = rcvByte;
+				dataSize = rcvByte;
 				automataState = 4;
 				c = 0;
 				
 				/* Comando identificado, agora basta receber os parametros */
-				cmdAwsFrameRcv = newEmptyTestCmdFrame( testCaseNumber, N );
+				cmdAwsFrameRcv = newEmptyTestCmdFrame( testType, dataSize );
 				
 				/* Apenas deixando o pacote de resposta no padrao, pois a 
 				 * funcao newEmptyTestCmdFrame foi reaproveitada. Nao causa 
@@ -161,13 +153,13 @@ cmd_frame_t rcvTestCmdAnswer()
 				 */
 				cmdAwsFrameRcv.magicCode = 0xE7C3;
 				
-				/* Caso nao irah ser recebido nenhum parametro o programa nao pode continuar aguardando*/
-				if( N == 0)
+				/* Caso nao irah ser recebido nenhum dado extra, o programa nao pode continuar aguardando*/
+				if( dataSize == 0)
 				{
 					automataState = 1;
 					rcvByte = 0;
 					c = 0;
-					N = 0;
+					dataSize = 0;
 					rcvAnswerFlag = 1;
 				}
 				
@@ -176,7 +168,7 @@ cmd_frame_t rcvTestCmdAnswer()
 			break;
 
 			case 4:
-				if( c < N )
+				if( c < dataSize )
 				{
 					cmdAwsFrameRcv.data[c] = rcvByte;
 					c++;
@@ -184,12 +176,12 @@ cmd_frame_t rcvTestCmdAnswer()
 				
 				/* O estado 5 possui uma e-transicao, entao nao deve-se
 				 * aguardar o recebimento de mais um byte para a mudanca de estado */
-				if( c == N )
+				if( c == dataSize )
 				{
 					automataState = 1;
 					rcvByte = 0;
 					c = 0;
-					N = 0;
+					dataSize = 0;
 					
 					rcvAnswerFlag = 1;
 				}
@@ -199,7 +191,7 @@ cmd_frame_t rcvTestCmdAnswer()
 				automataState = 1;
 				rcvByte = 0;
 				c = 0;
-				N = 0;
+				dataSize = 0;
 				break;
 		}
 	}

@@ -21,16 +21,24 @@
 #define PARAM_TEST_PASS 0xAA
 #define PARAM_TEST_FAIL 0xFF
 
+/* Constantes para os possíveis valores para o campo testType do comando.
+ * Sempre considerendo o CC como principal, ou seja ItaTests_TEST_TYPE_M_TX
+ * corresponde a um teste onde o CC funciona com Master Transmitter. */
+#define TEST_TYPE_M_TX	0x01
+#define TEST_TYPE_M_RX	0x02
+#define TEST_TYPE_S_TX	0x03
+#define TEST_TYPE_S_RX	0x04
+
 typedef struct __attribute__ ((__packed__)) {
 	uint16_t magicCode;
-	uint16_t testNumber;
+	uint8_t testType;
 	uint8_t dataSize;
 	uint8_t* data;
 } cmd_frame_t;
 
 void printfCmd(cmd_frame_t frame);
 void initTestsExecContrInterface();
-cmd_frame_t newEmptyTestCmdFrame(uint16_t testNumber, uint8_t paramSize);
+cmd_frame_t newEmptyTestCmdFrame(uint8_t testType, uint8_t paramSize);
 void freeCmdFrame(cmd_frame_t frame);
 void sendTestCmdFrame(cmd_frame_t frame);
 cmd_frame_t rcvTestCmdAnswer();
