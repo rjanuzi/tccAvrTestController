@@ -22,9 +22,9 @@ bool sd_exec_test( int testNumber )
 	printfCmd(cmdFrame);
 	
 	ansFrame = rcvTestCmdAnswer();
-	if(ansFrame.cmdCode != 0)
+	if(ansFrame.magicCode != 0)
 	{
-		if( ansFrame.params[0] == PARAM_TEST_FAIL )
+		if( ansFrame.data[0] == PARAM_TEST_FAIL )
 		{
 			result = false;
 			print_dbg( "\n\nFAIL" );

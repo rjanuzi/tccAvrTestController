@@ -21,12 +21,12 @@ void printfCmd(cmd_frame_t frame)
 	int i;
 	char* textAux;
 
-	sprintf(textAux, "\nCmd code: 0x%x\nParam Size: %d\nTest Number: %d\nParams:", frame.cmdCode, frame.paramSize, frame.testNumber);
+	sprintf(textAux, "\nCmd code: 0x%x\nTest Number: %x\nData Size: %x\nData:", frame.magicCode, frame.testNumber, frame.dataSize);
 	print_dbg(textAux);
 
-	for( i = 0; i < frame.paramSize; i++)
+	for( i = 0; i < frame.dataSize; i++)
 	{
-		sprintf(textAux, " 0x%x ", frame.params[i]);
+		sprintf(textAux, " 0x%x ", frame.data[i]);
 		print_dbg(textAux);
 	}
 }
@@ -40,26 +40,26 @@ void initTestsExecContrInterface()
 		gpio_set_pin_low( ITASAT_LED1 );
 }
 
-cmd_frame_t newEmptyTestCmdFrame(uint16_t testNumber, uint16_t paramSize)
+cmd_frame_t newEmptyTestCmdFrame(uint16_t testNumber, uint8_t paramSize)
 {
 	cmd_frame_t newFrame;
 	
-	newFrame.cmdCode = 0x3C7E;
+	newFrame.magicCode = 0x3C7E;
 	newFrame.testNumber = testNumber;
-	newFrame.paramSize = paramSize;
+	newFrame.dataSize = paramSize;
 	
 	if( paramSize != 0 )
-		newFrame.params = dlmalloc(paramSize);
+		newFrame.data = dlmalloc(paramSize);
 	
 	return newFrame;
 }
 
 void freeCmdFrame(cmd_frame_t frame)
 {
-	if( frame.paramSize != 0 )
-		dlfree(frame.params);
-	frame.cmdCode = 0;
-	frame.paramSize = 0;
+	if( frame.dataSize != 0 )
+		dlfree(frame.data);
+	frame.magicCode = 0;
+	frame.dataSize = 0;
 	frame.testNumber = 0;
 }
 
@@ -69,9 +69,9 @@ void sendTestCmdFrame(cmd_frame_t frame)
 	cmd_frame_t anwser;
 	
 	/* Send cmdCode */
-	aux = (frame.cmdCode>>8);
+	aux = (frame.magicCode>>8);
 	usart_putchar( TESTS_EXEC_CTRL_UART, aux);
-	aux = (frame.cmdCode&0x000000FF);
+	aux = (frame.magicCode&0x000000FF);
 	usart_putchar( TESTS_EXEC_CTRL_UART, aux);
 	
 	/* Send testNumber */
@@ -81,15 +81,13 @@ void sendTestCmdFrame(cmd_frame_t frame)
 	usart_putchar( TESTS_EXEC_CTRL_UART, aux);
 	
 	/* Send paramSize */
-	aux = (frame.paramSize>>8);
-	usart_putchar( TESTS_EXEC_CTRL_UART, aux);
-	aux = (frame.paramSize&0x000000FF);
+	aux = frame.dataSize;
 	usart_putchar( TESTS_EXEC_CTRL_UART, aux);
 	
 	/* Send params */ 
-	for( i = 0; i < frame.paramSize; i++)
+	for( i = 0; i < frame.dataSize; i++)
 	{
-		aux = frame.params[i];		
+		aux = frame.data[i];		
 		usart_putchar( TESTS_EXEC_CTRL_UART, aux);
 	}
 }
@@ -112,8 +110,8 @@ cmd_frame_t rcvTestCmdAnswer()
 		{
 			print_dbg("\n\ntests_execution_control - rcvTestCmdAnswer - USART_TIMEOUT OR USART_FAILURE");
 			initTestsExecContrInterface(); /* Reinicia a interface */
-			cmdAwsFrameRcv.cmdCode = 0;
-			cmdAwsFrameRcv.paramSize = 0;
+			cmdAwsFrameRcv.magicCode = 0;
+			cmdAwsFrameRcv.dataSize = 0;
 			cmdAwsFrameRcv.testNumber = 0;
 			return cmdAwsFrameRcv;
 		}
@@ -150,13 +148,7 @@ cmd_frame_t rcvTestCmdAnswer()
 
 			case 2:
 				/* Recebendo o MSByte do N */
-				N = (rcvByte<<8);
-				c++;
-				break;
-
-			case 3:
-				/* Recebendo o LSByte do N e trocando de estado */
-				N |= rcvByte;
+				N = rcvByte;
 				automataState = 4;
 				c = 0;
 				
@@ -167,7 +159,7 @@ cmd_frame_t rcvTestCmdAnswer()
 				 * funcao newEmptyTestCmdFrame foi reaproveitada. Nao causa 
 				 * problemas, pois o automato identifica apenas frames com o parametro 0xE7C3.
 				 */
-				cmdAwsFrameRcv.cmdCode = 0xE7C3;
+				cmdAwsFrameRcv.magicCode = 0xE7C3;
 				
 				/* Caso nao irah ser recebido nenhum parametro o programa nao pode continuar aguardando*/
 				if( N == 0)
@@ -178,7 +170,7 @@ cmd_frame_t rcvTestCmdAnswer()
 					N = 0;
 					rcvAnswerFlag = 1;
 				}
-			
+				
 				break;
 			}
 			break;
@@ -186,7 +178,7 @@ cmd_frame_t rcvTestCmdAnswer()
 			case 4:
 				if( c < N )
 				{
-					cmdAwsFrameRcv.params[c] = rcvByte;
+					cmdAwsFrameRcv.data[c] = rcvByte;
 					c++;
 				}
 				

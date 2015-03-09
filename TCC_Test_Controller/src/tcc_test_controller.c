@@ -3,7 +3,7 @@
 #include <tcc_test_controller.h>
 
 int main (void)
-{
+{	
 	general_initialize();
 	
 	print_dbg("\n==============================\nTCC Test Controller\n==============================\n");
@@ -28,5 +28,11 @@ void general_initialize()
 	
 	initTerminalInterface();
 	initTestsExecContrInterface();
+	
+	/* 
+	 * Importante: Caso o sistema esteja travando, verificar se 
+	 * nao estah ocorrendo nenhum erro na inicializacao do I2C, pois 
+	 * isso pode travar. 
+	 */
 	initI2CTestsInterface();
 }

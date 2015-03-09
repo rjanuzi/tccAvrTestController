@@ -22,15 +22,15 @@
 #define PARAM_TEST_FAIL 0xFF
 
 typedef struct __attribute__ ((__packed__)) {
-	uint16_t cmdCode;
+	uint16_t magicCode;
 	uint16_t testNumber;
-	uint16_t paramSize;
-	uint8_t* params;
+	uint8_t dataSize;
+	uint8_t* data;
 } cmd_frame_t;
 
 void printfCmd(cmd_frame_t frame);
 void initTestsExecContrInterface();
-cmd_frame_t newEmptyTestCmdFrame(uint16_t testNumber, uint16_t paramSize);
+cmd_frame_t newEmptyTestCmdFrame(uint16_t testNumber, uint8_t paramSize);
 void freeCmdFrame(cmd_frame_t frame);
 void sendTestCmdFrame(cmd_frame_t frame);
 cmd_frame_t rcvTestCmdAnswer();

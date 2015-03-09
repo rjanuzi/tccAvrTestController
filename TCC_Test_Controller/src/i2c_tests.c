@@ -17,7 +17,7 @@ const twis_options_t TWIS_OPTIONS = {
 };
 
 const twim_options_t TWIM_OPTIONS = {
-	.chip = 	AVR_ADDRESS ,	/* Endereco desse Master, utilizado apenas em um simples teste na inicializacao do controlador TWIM */
+	.chip = 	CUBE_COMPUTER_ADDRESS ,	/* Endereco desse Master, utilizado apenas em um simples teste na inicializacao do controlador TWIM */
 	.pba_hz = 	16000000, 		/* PBA Div = 1 no arquivo de configuracao do clock */
 	.smbus = 	false, 			/* Nao iremos utilizar o modo SMBUS */
 	.speed = 	400000 			/* Velocidade da transmissao */
@@ -114,11 +114,11 @@ bool i2c_test_01()
 	bool result;
 	
 	cmdFrame = newEmptyTestCmdFrame(testNumber, paramsSize);
-	cmdFrame.params[0] = 0x03;
-	cmdFrame.params[1] = 0xFF;
-	cmdFrame.params[2] = 0xEF;
-	cmdFrame.params[3] = 0x3F;
-	cmdFrame.params[4] = 0x23;
+	cmdFrame.data[0] = 0x03;
+	cmdFrame.data[1] = 0xFF;
+	cmdFrame.data[2] = 0xEF;
+	cmdFrame.data[3] = 0x3F;
+	cmdFrame.data[4] = 0x23;
 		
 	//Notifica o CC sobre a execucao do teste 01 e envia os dados auxiliares.
 	sendTestCmdFrame(cmdFrame);
@@ -131,9 +131,9 @@ bool i2c_test_01()
 	twim_write( TWI_MASTER, sendBuffer, paramsSize, CUBE_COMPUTER_ADDRESS, false );
 	
 	ansFrame = rcvTestCmdAnswer();
-	if(ansFrame.cmdCode != 0)
+	if(ansFrame.magicCode != 0)
 	{
-		if( ansFrame.params[0] == PARAM_TEST_FAIL )
+		if( ansFrame.data[0] == PARAM_TEST_FAIL )
 		{
 			result = false;
 			print_dbg( "\n\nFAIL" );
@@ -170,11 +170,11 @@ bool i2c_test_02()
 	bool result;
 	
 	cmdFrame = newEmptyTestCmdFrame(testNumber, paramsSize);
-	cmdFrame.params[0] = 0x03;
-	cmdFrame.params[1] = 0xFF;
-	cmdFrame.params[2] = 0xEF;
-	cmdFrame.params[3] = 0x3E; //Causara o Erro
-	cmdFrame.params[4] = 0x23;
+	cmdFrame.data[0] = 0x03;
+	cmdFrame.data[1] = 0xFF;
+	cmdFrame.data[2] = 0xEF;
+	cmdFrame.data[3] = 0x3E; //Causara o Erro
+	cmdFrame.data[4] = 0x23;
 	
 	//Notifica o CC sobre a execucao do teste 01 e envia os dados auxiliares.
 	sendTestCmdFrame(cmdFrame);
@@ -187,9 +187,9 @@ bool i2c_test_02()
 	twim_write( TWI_MASTER, sendBuffer, paramsSize, CUBE_COMPUTER_ADDRESS, false );
 	
 	ansFrame = rcvTestCmdAnswer();
-	if(ansFrame.cmdCode != 0)
+	if(ansFrame.magicCode != 0)
 	{
-		if( ansFrame.params[0] == PARAM_TEST_FAIL )
+		if( ansFrame.data[0] == PARAM_TEST_FAIL )
 		{
 			result = false;
 			print_dbg( "\n\nFAIL" );
