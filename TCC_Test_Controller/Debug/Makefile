@@ -77,7 +77,6 @@ C_SRCS +=  \
 ../src/ASF/thirdparty/dlmalloc/dlmalloc.c \
 ../src/ASF/thirdparty/dlmalloc/dlsbrk.c \
 ../src/i2c_tests.c \
-../src/sd_tests.c \
 ../src/terminal_controller.c \
 ../src/tests_execution_control.c \
 ../src/ASF/avr32/boards/stk600/rcuc3c0/init.c \
@@ -107,7 +106,6 @@ src/ASF/avr32/drivers/twis/twis.o \
 src/ASF/thirdparty/dlmalloc/dlmalloc.o \
 src/ASF/thirdparty/dlmalloc/dlsbrk.o \
 src/i2c_tests.o \
-src/sd_tests.o \
 src/terminal_controller.o \
 src/tests_execution_control.o \
 src/ASF/avr32/boards/stk600/rcuc3c0/init.o \
@@ -130,7 +128,6 @@ src/ASF/avr32/drivers/twis/twis.o \
 src/ASF/thirdparty/dlmalloc/dlmalloc.o \
 src/ASF/thirdparty/dlmalloc/dlsbrk.o \
 src/i2c_tests.o \
-src/sd_tests.o \
 src/terminal_controller.o \
 src/tests_execution_control.o \
 src/ASF/avr32/boards/stk600/rcuc3c0/init.o \
@@ -153,7 +150,6 @@ src/ASF/avr32/drivers/twis/twis.d \
 src/ASF/thirdparty/dlmalloc/dlmalloc.d \
 src/ASF/thirdparty/dlmalloc/dlsbrk.d \
 src/i2c_tests.d \
-src/sd_tests.d \
 src/terminal_controller.d \
 src/tests_execution_control.d \
 src/ASF/avr32/boards/stk600/rcuc3c0/init.d \
@@ -176,7 +172,6 @@ src/ASF/avr32/drivers/twis/twis.d \
 src/ASF/thirdparty/dlmalloc/dlmalloc.d \
 src/ASF/thirdparty/dlmalloc/dlsbrk.d \
 src/i2c_tests.d \
-src/sd_tests.d \
 src/terminal_controller.d \
 src/tests_execution_control.d \
 src/ASF/avr32/boards/stk600/rcuc3c0/init.d \
@@ -204,8 +199,6 @@ OUTPUT_FILE_DEP:= ./makedep.mk
 LIB_DEP+= 
 
 # AVR32/GNU C Compiler
-
-
 
 
 

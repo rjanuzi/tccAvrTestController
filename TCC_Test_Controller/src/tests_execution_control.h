@@ -18,6 +18,8 @@
 #include <delay.h>
 #include <dlmalloc.h>
 
+#define DATA_MAX_SIZE	255 /* utilizando um byte para o paramSize (2^8) */
+
 #define PARAM_TEST_PASS 0xAA
 #define PARAM_TEST_FAIL 0xFF
 
@@ -33,7 +35,7 @@ typedef struct __attribute__ ((__packed__)) {
 	uint16_t magicCode;
 	uint8_t testType;
 	uint8_t dataSize;
-	uint8_t* data;
+	uint8_t data[DATA_MAX_SIZE];
 } cmd_frame_t;
 
 void printfCmd(cmd_frame_t frame);

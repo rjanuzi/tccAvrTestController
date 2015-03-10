@@ -377,12 +377,6 @@
     <Compile Include="src\i2c_tests.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="src\sd_tests.c">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="src\sd_tests.h">
-      <SubType>compile</SubType>
-    </Compile>
     <Compile Include="src\tcc_test_controller.h">
       <SubType>compile</SubType>
     </Compile>

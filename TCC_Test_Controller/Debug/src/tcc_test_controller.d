@@ -92,7 +92,7 @@ src/tcc_test_controller.d src/tcc_test_controller.o \
  ../src/ASF/avr32/drivers/twis/twis.h ../src/config/conf_twis.h \
  ../src/ASF/avr32/drivers/usart/usart.h \
  ../src/itasat_pins_functions_stk600.h ../src/tcc_test_controller.h \
- ../src/terminal_controller.h ../src/i2c_tests.h ../src/sd_tests.h \
+ ../src/terminal_controller.h ../src/i2c_tests.h \
  c:\program\ files\ (x86)\atmel\atmel\ toolchain\avr32\ gcc\native\3.4.1057\avr32-gnu-toolchain\bin\../lib/gcc/avr32/4.4.7/../../../../avr32/include/string.h \
  c:\program\ files\ (x86)\atmel\atmel\ toolchain\avr32\ gcc\native\3.4.1057\avr32-gnu-toolchain\bin\../lib/gcc/avr32/4.4.7/../../../../avr32/include/sys/string.h \
  c:\program\ files\ (x86)\atmel\atmel\ toolchain\avr32\ gcc\native\3.4.1057\avr32-gnu-toolchain\bin\../lib/gcc/avr32/4.4.7/../../../../avr32/include/stdio.h \
@@ -299,8 +299,6 @@ c:\program\ files\ (x86)\atmel\atmel\ toolchain\avr32\ gcc\native\3.4.1057\avr32
 ../src/terminal_controller.h:
 
 ../src/i2c_tests.h:
-
-../src/sd_tests.h:
 
 c:\program\ files\ (x86)\atmel\atmel\ toolchain\avr32\ gcc\native\3.4.1057\avr32-gnu-toolchain\bin\../lib/gcc/avr32/4.4.7/../../../../avr32/include/string.h:
 

@@ -55,50 +55,22 @@ void manage_command()
 		cmd_recognized = true;
 	}
 	
-	if( strcmp( command_buffer, "i2c test 1" ) == 0 )
+	if( strcmp( command_buffer, "i2c test mrx" ) == 0 )
 	{
-		i2c_test_01();
+		masterReceiverTest();
 		cmd_recognized = true;
 	}
 	
-	if( strcmp( command_buffer, "i2c test 2" ) == 0 )
+	if( strcmp( command_buffer, "i2c test mtx" ) == 0 )
 	{
-		i2c_test_02();
-		cmd_recognized = true;
-	}
-	
-	if( strcmp( command_buffer, "sd test all" ) == 0 )
-	{
-		sd_test_all();
-		cmd_recognized = true;
-	}
-	
-	if( strcmp( command_buffer, "sd test 1" ) == 0 )
-	{
-		sd_test_01();
-		cmd_recognized = true;
-	}
-	
-	if( strcmp( command_buffer, "sd test 2" ) == 0 )
-	{
-		sd_test_02();
-		cmd_recognized = true;
-	}
-	
-	if( strcmp( command_buffer, "sd test 3" ) == 0 )
-	{
-		sd_test_03();
-		cmd_recognized = true;
-	}
-	
-	if( strcmp( command_buffer, "sd test 4" ) == 0 )
-	{
-		sd_test_04();
+		masterTransmitterTest();
 		cmd_recognized = true;
 	}
 	
 	if(!cmd_recognized)
+	{
 		print_dbg("\n\nComando nao reconhecido!");
+	}
 	
 	free_index = 0; //Simulate the reset of command_buffer
 }

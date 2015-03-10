@@ -12,8 +12,6 @@ src\ASF\thirdparty\dlmalloc\dlsbrk.c
 
 src\i2c_tests.c
 
-src\sd_tests.c
-
 src\terminal_controller.c
 
 src\tests_execution_control.c

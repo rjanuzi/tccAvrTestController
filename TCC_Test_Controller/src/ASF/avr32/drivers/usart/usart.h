@@ -77,7 +77,7 @@
 //! @}
 
 //! Default time-out value (number of attempts).
-#define USART_DEFAULT_TIMEOUT         10000
+#define USART_DEFAULT_TIMEOUT         100000
 
 /*! \name Parity Settings
  */

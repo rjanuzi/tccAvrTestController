@@ -16,13 +16,16 @@
 #include <twim.h>
 #include <twis.h>
 
-#define AVR_ADDRESS 0x02
+#define AVR_ADDRESS 0x1A
 #define CUBE_COMPUTER_ADDRESS 0x05
 #define TWI_MASTER &TWIM0
 #define TWI_SLAVE &TWIS0
 #define PARAM_TEST_PASS 0xAA
 #define PARAM_TEST_FAIL 0xFF
-#define CC_PREPARE_TO_TEST_DELAY 500
+#define CC_PREPARE_TO_TEST_DELAY 1000
+
+#define TESTS_M_TX_SIZE	4
+#define TESTS_M_RX_SIZE	4
 
 typedef struct __attribute__((__packed__)) {
 	uint16_t NBytes; /* {4, …, 65536} */
@@ -38,9 +41,20 @@ void RxFunction( uint8_t ReceivedData );
 uint8_t TxFunction();
 void StopFunction();
 void initI2CTestsInterface();
-
 void i2c_test_all();
-bool i2c_test_01();
-bool i2c_test_02();
+
+/************************************************************************/
+/* Funcao para execucao dos testes de Master Trasmitter (CubeComputer)
+   quais testes vao ser feitos sao definidos na variavel \ref tests_M_TX
+   definida no arquivo i2c_tests.c.                                     */
+/************************************************************************/
+void masterTransmitterTest();
+
+/************************************************************************/
+/* Funcao para execucao dos testes de Master Receiver (CubeComputer)
+   quais testes vao ser feitos sao definidos na variavel \ref tests_M_RX
+   definida no arquivo i2c_tests.c.                                     */
+/************************************************************************/
+void masterReceiverTest();
 
 #endif /* I2C_TESTS_H_ */

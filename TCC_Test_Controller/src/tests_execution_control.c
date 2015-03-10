@@ -21,7 +21,7 @@ void printfCmd(cmd_frame_t frame)
 	int i;
 	char* textAux;
 
-	sprintf(textAux, "\nCmd code: 0x%x\nTest Type: %x\nData Size: %x\nData:", frame.magicCode, frame.testType, frame.dataSize);
+	sprintf(textAux, "\nCmd code: 0x%x\nTest Type: %d\nData Size: %d\nData:", frame.magicCode, frame.testType, frame.dataSize);
 	print_dbg(textAux);
 
 	for( i = 0; i < frame.dataSize; i++)
@@ -40,27 +40,31 @@ void initTestsExecContrInterface()
 		gpio_set_pin_low( ITASAT_LED1 );
 }
 
-cmd_frame_t newEmptyTestCmdFrame(uint8_t testType, uint8_t paramSize)
+cmd_frame_t newEmptyTestCmdFrame(uint8_t testType, uint8_t dataSize)
 {
 	cmd_frame_t newFrame;
+	int i = 0;
 	
 	newFrame.magicCode = 0x3C7E;
 	newFrame.testType = testType;
-	newFrame.dataSize = paramSize;
+	newFrame.dataSize = dataSize;
 	
-	if( paramSize != 0 )
-		newFrame.data = dlmalloc(paramSize);
+	for(i = 0; i < dataSize; i++)
+		newFrame.data[i] = 0;
 	
 	return newFrame;
 }
 
 void freeCmdFrame(cmd_frame_t frame)
 {
-	if( frame.dataSize != 0 )
-		dlfree(frame.data);
+	int i;
+	
 	frame.magicCode = 0;
 	frame.dataSize = 0;
 	frame.testType = 0;
+	
+	for(i = 0; i < frame.dataSize; i++)
+		frame.data[i] = 0;
 }
 
 void sendTestCmdFrame(cmd_frame_t frame)
@@ -69,24 +73,39 @@ void sendTestCmdFrame(cmd_frame_t frame)
 	cmd_frame_t anwser;
 	
 	/* Send cmdCode */
-	aux = (frame.magicCode>>8);
-	usart_putchar( TESTS_EXEC_CTRL_UART, aux);
-	aux = (frame.magicCode&0x000000FF);
-	usart_putchar( TESTS_EXEC_CTRL_UART, aux);
+	aux = (frame.magicCode>>8);	
+	if( USART_FAILURE == usart_putchar( TESTS_EXEC_CTRL_UART, aux))
+	{
+		print_dbg("\ntests_execution_control - sendTestCmdFrame - USART_FAILURE");
+	}
+	aux = (frame.magicCode&0x00FF);
+	if(USART_FAILURE == usart_putchar( TESTS_EXEC_CTRL_UART, aux))
+	{
+		print_dbg("\ntests_execution_control - sendTestCmdFrame - USART_FAILURE");
+	}
 	
-	/* Send testNumber */
+	/* Send testType */
 	aux = frame.testType;
-	usart_putchar( TESTS_EXEC_CTRL_UART, aux);
+	if(USART_FAILURE == usart_putchar( TESTS_EXEC_CTRL_UART, aux))
+	{
+		print_dbg("\ntests_execution_control - sendTestCmdFrame - USART_FAILURE");
+	}
 	
-	/* Send paramSize */
+	/* Send dataSize */
 	aux = frame.dataSize;
-	usart_putchar( TESTS_EXEC_CTRL_UART, aux);
+	if(USART_FAILURE == usart_putchar( TESTS_EXEC_CTRL_UART, aux))
+	{
+		print_dbg("\ntests_execution_control - sendTestCmdFrame - USART_FAILURE");
+	}
 	
-	/* Send params */ 
+	/* Send data */ 
 	for( i = 0; i < frame.dataSize; i++)
 	{
 		aux = frame.data[i];		
-		usart_putchar( TESTS_EXEC_CTRL_UART, aux);
+		if(USART_FAILURE == usart_putchar( TESTS_EXEC_CTRL_UART, aux))
+		{
+			print_dbg("\ntests_execution_control - sendTestCmdFrame - USART_FAILURE");
+		}
 	}
 }
 
@@ -101,8 +120,8 @@ cmd_frame_t rcvTestCmdAnswer()
 	
 	while(rcvAnswerFlag == 0)
 	{		
-		//rcvByte = usart_getchar_timeout( TESTS_EXEC_CTRL_UART );
-		rcvByte = usart_getchar( TESTS_EXEC_CTRL_UART );
+		rcvByte = usart_getchar_timeout( TESTS_EXEC_CTRL_UART );
+		//rcvByte = usart_getchar( TESTS_EXEC_CTRL_UART );
 		
 		if(rcvByte == USART_TIMEOUT || rcvByte == USART_FAILURE)
 		{

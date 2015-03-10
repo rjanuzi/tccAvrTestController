@@ -8,19 +8,83 @@
 #include <i2c_tests.h>
 #include <tests_execution_control.h>
 
+const cmd_frame_t tests_M_TX[TESTS_M_TX_SIZE] =
+{
+	{	0x3C7E,			/* magicCode */
+		TEST_TYPE_M_TX,	/* testType */
+		1,				/* dataSize */
+		{0x37}			/* data */
+	},
+	
+	{
+		0x3C7E,			/* magicCode */
+		TEST_TYPE_M_TX,	/* testType */
+		10,				/* dataSize */
+		{0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x10}			/* data */
+	},
+	
+	{
+		0x3C7E,			/* magicCode */
+		TEST_TYPE_M_TX,	/* testType */
+		5,				/* dataSize */
+		{0xAA, 0xBB, 0xCC, 0xDD, 0xEE, 0xFF}			/* data */
+	},
+	
+	{
+		0x3C7E,			/* magicCode */
+		TEST_TYPE_M_TX,	/* testType */
+		7,				/* dataSize */
+		{0x3C, 0x7E, 0xAA, 0xBB, 0xCC, 0xDD, 0xEE, 0xFF}			/* data */
+	}
+};
+
+const cmd_frame_t tests_M_RX[TESTS_M_RX_SIZE] =
+{
+	{	0x3C7E,			/* magicCode */
+		TEST_TYPE_M_RX,	/* testType */
+		1,				/* dataSize */
+		{0x37}			/* data */
+	},
+	
+	{
+		0x3C7E,			/* magicCode */
+		TEST_TYPE_M_RX,	/* testType */
+		10,				/* dataSize */
+		{0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x10}			/* data */
+	},
+	
+	{
+		0x3C7E,			/* magicCode */
+		TEST_TYPE_M_RX,	/* testType */
+		5,				/* dataSize */
+		{0xAA, 0xBB, 0xCC, 0xDD, 0xEE, 0xFF}			/* data */
+	},
+	
+	{
+		0x3C7E,			/* magicCode */
+		TEST_TYPE_M_RX,	/* testType */
+		7,				/* dataSize */
+		{0x3C, 0x7E, 0xAA, 0xBB, 0xCC, 0xDD, 0xEE, 0xFF}			/* data */
+	}
+};
+
+uint8_t i2cBytesBuffer[DATA_MAX_SIZE];
+uint8_t receivedBytesCount = 0;
+bool	transmissionEnded = false;
+
 const twis_options_t TWIS_OPTIONS = {
-	.pba_hz = 16000000, /* 16 MHz */
-	.speed = 400000, /* 400 KHz */
-	.chip = AVR_ADDRESS, /* Endereco desse Slave */
-	.smbus = false, /* Modo SMBUS serah utilizado */
-	.tenbit = false /* Serah utilizado endereco de 10 bits */
+	.pba_hz = 16000000,		/* 16 MHz */
+	.speed = 400000,		/* 400 KHz */
+	.chip = AVR_ADDRESS,	/* Endereco desse Slave */
+	.smbus = false,			/* Modo SMBUS serah utilizado */
+	.tenbit = false			/* Serah utilizado endereco de 10 bits */
 };
 
 const twim_options_t TWIM_OPTIONS = {
-	.chip = 	CUBE_COMPUTER_ADDRESS ,	/* Endereco desse Master, utilizado apenas em um simples teste na inicializacao do controlador TWIM */
-	.pba_hz = 	16000000, 		/* PBA Div = 1 no arquivo de configuracao do clock */
-	.smbus = 	false, 			/* Nao iremos utilizar o modo SMBUS */
-	.speed = 	400000 			/* Velocidade da transmissao */
+	.chip = 	CUBE_COMPUTER_ADDRESS ,		/* Endereco desse Master, utilizado apenas em um simples teste na inicializacao do controlador TWIM */
+	.pba_hz = 	16000000, 					/* PBA Div = 1 no arquivo de configuracao do clock */
+	.smbus = 	false, 						/* Nao iremos utilizar o modo SMBUS */
+	.speed = 	400000 						/* Velocidade da transmissao */
 };
 
 /* Funcoes para controle das transmissoes */
@@ -42,34 +106,16 @@ void initI2CTestsInterface()
 		gpio_set_pin_low( ITASAT_LED3 );
 }
 
-/*!
- * \brief Funcao a ser executada quando um byte eh recebido do Master.
- *
- * Essa funcao eh executada quando uma interrupcao, que sinaliza a recepcao de um byte do Master, ocorre. O controlador TWIS automaticamente executa essa funcao
- * passando por parametro o byte recebido. Entao a funcao utiliza a flag \ref ReceivedBytesCount para realizar a correta verificacao com um determinado byte esperado,
- * caso a verificacao falhe a flag \ref ReceivedBytesOK recebe o valor \ref false.
- *
- * \param ReceivedData Byte recebido na comunicacao
- *
- * \return \ref void.
- */
+
+/* TODO - Add Text */
 void RxFunction( uint8_t ReceivedData )
 {
-	char* texto;
-	gpio_tgl_gpio_pin(ITASAT_LED7);
+	i2cBytesBuffer[receivedBytesCount++] = ReceivedData;
 	
-// 	sprintf( texto, "\nByte %d recebido: 0x%x", bytes_count, ReceivedData);
-// 	usart_write_line(DBG_UART, texto);
+	gpio_tgl_gpio_pin(ITASAT_LED7);
 }
 
-/*!
- * \brief Funcao a ser executada quando um byte tiver que ser enviado ao Master.
- *
- * Essa funcao eh executada quando uma interrupcao, que sinaliza que um byte deve ser enviado ao Master, ocorre. O controlador TWIS automaticamente executa essa funcao
- * e envia o byte que ela retorna para ao Master. A funcao utiliza a flag \ref SentBytesCount para enviar o byte correto.
- *
- * \return Byte a ser enviado ao Master.
- */
+/* TODO - Add Text */
 uint8_t TxFunction()
 {
 	const char* texto;
@@ -79,136 +125,118 @@ uint8_t TxFunction()
 	return 0xaa;
 }
 
-/*!
- * \brief Funcao a ser executada quando uma transmissao (envio ou recepcao) termina.
- *
- * Essa funcao eh executada quando uma interrupcao, que sinaliza que uma transmissao terminou, ocorre. O controlador TWIS automaticamente executa essa funcao
- * que basicamente realiza uma verificacao das flags \ref ReceivedBytesCount, \ref ReceivedBytesOK e \ref SentBytesCount, de acordo com o resultado de cada 
- * verificacao executa um comando toggle em um determino LED. Apos as verificacoes das flags, o programa "reseta" as mesmas para que sejam usadas na proxima transmissao.
- *
- * \return \ref void.
- */
+/* TODO - Add Text */
 void StopFunction()
 {
-	const char* texto;
-	
+	transmissionEnded = true;	
 	gpio_tgl_gpio_pin(ITASAT_LED5);
 }
 
 void i2c_test_all()
 {
-	i2c_test_01();
-	i2c_test_02();
+	masterReceiverTest();
+	masterTransmitterTest();
 }
 
-/*
- * Simples teste de envio (AVR -> CC) para verificacao do sistema de testes. (Result Pass)
- */
-bool i2c_test_01()
+void masterTransmitterTest()
 {
-	print_dbg("\n\n==============================\nExecutando i2c teste 01...\n==============================\n");
+	print_dbg("\n\n==============================\nExecutando i2c teste mtx...\n==============================\n");
 	
-	uint8_t sendBuffer[5] = {0x03, 0xFF, 0xEF, 0x3F, 0x23};
-	int i, aux, testType = TEST_TYPE_M_RX, paramsSize = 5;
-	cmd_frame_t cmdFrame, ansFrame;
-	bool result;
+	int i, j, timeout = 10000000, trys;
+	char* text;
+	bool testResult = true;
 	
-	cmdFrame = newEmptyTestCmdFrame(testType, paramsSize);
-	cmdFrame.data[0] = 0x03;
-	cmdFrame.data[1] = 0xFF;
-	cmdFrame.data[2] = 0xEF;
-	cmdFrame.data[3] = 0x3F;
-	cmdFrame.data[4] = 0x23;
-		
-	//Notifica o CC sobre a execucao do teste 01 e envia os dados auxiliares.
-	sendTestCmdFrame(cmdFrame);
-	
-	print_dbg("\n\nTest command sent: ");
-	printfCmd(cmdFrame);
-
-	//Espera o CC se preparar para o teste.
-	delay_ms(CC_PREPARE_TO_TEST_DELAY);
-	twim_write( TWI_MASTER, sendBuffer, paramsSize, CUBE_COMPUTER_ADDRESS, false );
-	
-	ansFrame = rcvTestCmdAnswer();
-	if(ansFrame.magicCode != 0)
+	for(i = 0; i < TESTS_M_TX_SIZE; i++ )
 	{
-		if( ansFrame.data[0] == PARAM_TEST_FAIL )
+		trys = 0;
+		sprintf(text, "\nTest %d...", (i+1));
+		print_dbg(text);
+		
+		//Notifica o CC sobre a execucao do teste e envia o comando.
+		sendTestCmdFrame(tests_M_TX[i]);
+		
+		//   		print_dbg("\n\nTest command sent: ");
+		//   		printfCmd(tests_M_TX[i]);
+		
+		//Espera o CC se preparar para o teste.
+		delay_ms(CC_PREPARE_TO_TEST_DELAY);
+		
+		//TODO - Fazer a verificacao, utilizando os bytes recebidos pela I2C.
+		
+		/* Aguarda ateh o CC tenha enviado todos os bytes da transmissao de teste. */
+		while( (transmissionEnded != true) && (++trys < timeout) ) {};
+		
+		if( trys >= timeout )
 		{
-			result = false;
-			print_dbg( "\n\nFAIL" );
+			print_dbg("\nErro - i2c_tests.c - masterTransmitterTest - timeout");
+			testResult = false;
+		}
+		
+		/* Compara o bytes recebidos com os bytes esperados */
+		for( j = 0; j < receivedBytesCount; j++)
+		{
+			if( i2cBytesBuffer[j] != tests_M_TX[i].data[j] )
+				testResult = false;
+		}
+		
+		/* Reseta as flags globais */
+		receivedBytesCount = 0;
+		transmissionEnded = false;
+		
+		/* Verifica e imprime o resultado do teste */
+		if( testResult == false)
+		{
+			print_dbg( " FAIL" );
 		}
 		else
 		{
-			result = true;
-			print_dbg( "\n\nPASS" );
+			print_dbg( " PASS" );
 		}
-		
-		print_dbg("\n\nTest answer received: ");
-		printfCmd(ansFrame);
-		freeCmdFrame(ansFrame);
 	}
-	else
-	{
-		print_dbg( "\n\nFAIL" );
-		result = false;
-	}
-	
-	return result;
 }
 
-/*
- * Simples teste de envio (AVR -> CC) para verificacao do sistema de testes. (Result Fail)
- */
-bool i2c_test_02()
+void masterReceiverTest()
 {
-	print_dbg("\n\n==============================\nExecutando i2c teste 02...\n==============================\n");
+	print_dbg("\n\n==============================\nExecutando i2c teste mrx...\n==============================\n");
 	
-	uint8_t sendBuffer[5] = {0x03, 0xFF, 0xEF, 0x3F, 0x23};
-	int i, aux, testNumber = 2, paramsSize = 5;
-	cmd_frame_t cmdFrame, ansFrame;
-	bool result;
+	int i;
+	cmd_frame_t ansFrame;
+	char* text;
 	
-	cmdFrame = newEmptyTestCmdFrame(testNumber, paramsSize);
-	cmdFrame.data[0] = 0x03;
-	cmdFrame.data[1] = 0xFF;
-	cmdFrame.data[2] = 0xEF;
-	cmdFrame.data[3] = 0x3E; //Causara o Erro
-	cmdFrame.data[4] = 0x23;
-	
-	//Notifica o CC sobre a execucao do teste 01 e envia os dados auxiliares.
-	sendTestCmdFrame(cmdFrame);
-	
-	print_dbg("\n\nTest command sent: ");
-	printfCmd(cmdFrame);
-
-	//Espera o CC se preparar para o teste.
-	delay_ms(CC_PREPARE_TO_TEST_DELAY);
-	twim_write( TWI_MASTER, sendBuffer, paramsSize, CUBE_COMPUTER_ADDRESS, false );
-	
-	ansFrame = rcvTestCmdAnswer();
-	if(ansFrame.magicCode != 0)
+	for(i = 0; i < TESTS_M_RX_SIZE; i++ )
 	{
-		if( ansFrame.data[0] == PARAM_TEST_FAIL )
-		{
-			result = false;
-			print_dbg( "\n\nFAIL" );
-		}
-		else
-		{
-			result = true;
-			print_dbg( "\n\nPASS" );
-		}
+		sprintf(text, "\nTest %d...", (i+1));
+		print_dbg(text);
 		
-		print_dbg("\n\nTest answer received: ");
-		printfCmd(ansFrame);
-		freeCmdFrame(ansFrame);
+		//Notifica o CC sobre a execucao do teste e envia o comando.
+ 		sendTestCmdFrame(tests_M_RX[i]);
+ 		
+//   		print_dbg("\n\nTest command sent: ");
+//   		printfCmd(tests_M_RX[i]);
+ 		
+ 		//Espera o CC se preparar para o teste.
+ 		delay_ms(CC_PREPARE_TO_TEST_DELAY);
+ 		twim_write( TWI_MASTER, &tests_M_RX[i].data[0], tests_M_RX[i].dataSize, CUBE_COMPUTER_ADDRESS, false );
+ 		
+ 		ansFrame = rcvTestCmdAnswer();
+ 		
+ 		if(ansFrame.magicCode != 0)
+ 		{
+ 			if( ansFrame.data[0] == PARAM_TEST_FAIL )
+ 			{
+ 				print_dbg( " FAIL" );
+ 			}
+ 			else
+ 			{
+ 				print_dbg( " PASS" );
+ 			}
+ 			
+//  			print_dbg("\n\nTest answer received: ");
+//  			printfCmd(ansFrame);
+ 		}
+ 		else
+ 		{
+ 			print_dbg( " MagicCode error! - FAIL" );
+ 		}
 	}
-	else
-	{
-		print_dbg( "\n\nFAIL" );
-		result = false;
-	}
-	
-	return result;
 }

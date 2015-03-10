@@ -13,7 +13,6 @@
 #include <usart.h>
 #include <gpio.h>
 #include <i2c_tests.h>
-#include <sd_tests.h>
 #include <string.h>
 #include <stdio.h>
 
