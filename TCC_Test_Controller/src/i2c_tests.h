@@ -20,12 +20,14 @@
 #define CUBE_COMPUTER_ADDRESS 0x05
 #define TWI_MASTER &TWIM0
 #define TWI_SLAVE &TWIS0
-#define PARAM_TEST_PASS 0xAA
-#define PARAM_TEST_FAIL 0xFF
+#define RESULT_TEST_PASS 0xAA
+#define RESULT_TEST_FAIL 0xFF
 #define CC_PREPARE_TO_TEST_DELAY 1000
 
-#define TESTS_M_TX_SIZE	4
-#define TESTS_M_RX_SIZE	4
+#define TESTS_M_TX_SIZE	2
+#define TESTS_M_RX_SIZE	2
+#define TESTS_S_TX_SIZE	2
+#define TESTS_S_RX_SIZE	2
 
 typedef struct __attribute__((__packed__)) {
 	uint16_t NBytes; /* {4, …, 65536} */
@@ -52,9 +54,23 @@ void masterTransmitterTest();
 
 /************************************************************************/
 /* Funcao para execucao dos testes de Master Receiver (CubeComputer)
-   quais testes vao ser feitos sao definidos na variavel \ref tests_M_RX
+   quais testes vao ser feitos sao definidos na variavel \ref tests_S_RX
    definida no arquivo i2c_tests.c.                                     */
 /************************************************************************/
 void masterReceiverTest();
+
+/************************************************************************/
+/* Funcao para execucao dos testes de Slave Trasmitter (CubeComputer)
+   quais testes vao ser feitos sao definidos na variavel \ref tests_S_TX
+   definida no arquivo i2c_tests.c.                                     */
+/************************************************************************/
+void slaveTransmitterTest();
+
+/************************************************************************/
+/* Funcao para execucao dos testes de Slave Receiver (CubeComputer)
+   quais testes vao ser feitos sao definidos na variavel \ref tests_S_RX
+   definida no arquivo i2c_tests.c.                                     */
+/************************************************************************/
+void slaveReceiverTest();
 
 #endif /* I2C_TESTS_H_ */

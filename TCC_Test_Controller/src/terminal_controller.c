@@ -34,10 +34,11 @@ void manage_command()
 	if( strcmp( command_buffer, "help" ) == 0 )
 	{
 		print_dbg("\n\nhelp: Apresenta todos os comandos existentes.");
-		print_dbg("\n\ni2c test all: Executa todos os testes do I2C.");
-		print_dbg("\n\ni2c test 'x': Executa o teste de numero 'x'.");
-		print_dbg("\n\nsd test all: Executa todos os testes do SD.");
-		print_dbg("\n\nsd test 'x': Executa o teste de numero 'x'.");
+		print_dbg("\n\ni2c all: Executa todos os testes do I2C.");
+		print_dbg("\n\ni2c mtx: Executa o teste da I2C com o CubeComputer como Master Transmitter.");
+		print_dbg("\n\ni2c mrx: Executa o teste da I2C com o CubeComputer como Master Receiver.");
+		print_dbg("\n\ni2c stx: Executa o teste da I2C com o CubeComputer como Slave Transmitter.");
+		print_dbg("\n\ni2c srx: Executa o teste da I2C com o CubeComputer como Slave Receiver.");
 		
 		cmd_recognized = true;
 	}
@@ -49,21 +50,33 @@ void manage_command()
 		cmd_recognized = true;
 	}
 	
-	if( strcmp( command_buffer, "i2c test all" ) == 0 )
+	if( strcmp( command_buffer, "i2c all" ) == 0 )
 	{
 		i2c_test_all();
 		cmd_recognized = true;
 	}
 	
-	if( strcmp( command_buffer, "i2c test mrx" ) == 0 )
+	if( strcmp( command_buffer, "i2c mtx" ) == 0 )
+	{
+		masterTransmitterTest();
+		cmd_recognized = true;
+	}
+	
+	if( strcmp( command_buffer, "i2c mrx" ) == 0 )
 	{
 		masterReceiverTest();
 		cmd_recognized = true;
 	}
 	
-	if( strcmp( command_buffer, "i2c test mtx" ) == 0 )
+	if( strcmp( command_buffer, "i2c stx" ) == 0 )
 	{
-		masterTransmitterTest();
+		slaveTransmitterTest();
+		cmd_recognized = true;
+	}
+	
+	if( strcmp( command_buffer, "i2c srx" ) == 0 )
+	{
+		slaveReceiverTest();
 		cmd_recognized = true;
 	}
 	

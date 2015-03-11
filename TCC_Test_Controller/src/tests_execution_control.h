@@ -20,8 +20,8 @@
 
 #define DATA_MAX_SIZE	255 /* utilizando um byte para o paramSize (2^8) */
 
-#define PARAM_TEST_PASS 0xAA
-#define PARAM_TEST_FAIL 0xFF
+#define RESULT_TEST_PASS 0xAA
+#define RESULT_TEST_FAIL 0xFF
 
 /* Constantes para os possíveis valores para o campo testType do comando.
  * Sempre considerendo o CC como principal, ou seja ItaTests_TEST_TYPE_M_TX

@@ -22,20 +22,6 @@ const cmd_frame_t tests_M_TX[TESTS_M_TX_SIZE] =
 		10,				/* dataSize */
 		{0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x10}			/* data */
 	},
-	
-	{
-		0x3C7E,			/* magicCode */
-		TEST_TYPE_M_TX,	/* testType */
-		5,				/* dataSize */
-		{0xAA, 0xBB, 0xCC, 0xDD, 0xEE, 0xFF}			/* data */
-	},
-	
-	{
-		0x3C7E,			/* magicCode */
-		TEST_TYPE_M_TX,	/* testType */
-		7,				/* dataSize */
-		{0x3C, 0x7E, 0xAA, 0xBB, 0xCC, 0xDD, 0xEE, 0xFF}			/* data */
-	}
 };
 
 const cmd_frame_t tests_M_RX[TESTS_M_RX_SIZE] =
@@ -52,25 +38,43 @@ const cmd_frame_t tests_M_RX[TESTS_M_RX_SIZE] =
 		10,				/* dataSize */
 		{0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x10}			/* data */
 	},
-	
-	{
-		0x3C7E,			/* magicCode */
-		TEST_TYPE_M_RX,	/* testType */
-		5,				/* dataSize */
-		{0xAA, 0xBB, 0xCC, 0xDD, 0xEE, 0xFF}			/* data */
+};
+
+const cmd_frame_t tests_S_TX[TESTS_S_TX_SIZE] =
+{
+	{	0x3C7E,			/* magicCode */
+		TEST_TYPE_S_TX,	/* testType */
+		1,				/* dataSize */
+		{0x37}			/* data */
 	},
 	
 	{
 		0x3C7E,			/* magicCode */
-		TEST_TYPE_M_RX,	/* testType */
-		7,				/* dataSize */
-		{0x3C, 0x7E, 0xAA, 0xBB, 0xCC, 0xDD, 0xEE, 0xFF}			/* data */
-	}
+		TEST_TYPE_S_TX,	/* testType */
+		10,				/* dataSize */
+		{0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x10}			/* data */
+	},
+};
+
+const cmd_frame_t tests_S_RX[TESTS_S_RX_SIZE] =
+{
+	{	0x3C7E,			/* magicCode */
+		TEST_TYPE_S_RX,	/* testType */
+		1,				/* dataSize */
+		{0x37}			/* data */
+	},
+	
+	{
+		0x3C7E,			/* magicCode */
+		TEST_TYPE_S_RX,	/* testType */
+		10,				/* dataSize */
+		{0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x10}			/* data */
+	},
 };
 
 uint8_t i2cBytesBuffer[DATA_MAX_SIZE];
-uint8_t receivedBytesCount = 0;
-bool	transmissionEnded = false;
+uint8_t receivedBytesCount = 0, sentBytesCount = 0, runningMrxTest = 0;
+bool transmissionEnded = false;
 
 const twis_options_t TWIS_OPTIONS = {
 	.pba_hz = 16000000,		/* 16 MHz */
@@ -118,11 +122,13 @@ void RxFunction( uint8_t ReceivedData )
 /* TODO - Add Text */
 uint8_t TxFunction()
 {
-	const char* texto;
+	uint8_t byteToSend = tests_M_RX[runningMrxTest].data[sentBytesCount];
+	
+	sentBytesCount++;
 	
 	gpio_tgl_gpio_pin(ITASAT_LED6);
 	
-	return 0xaa;
+	return byteToSend; /* Envia o byte de numero sentBytesCount do teste em andamento */
 }
 
 /* TODO - Add Text */
@@ -134,13 +140,15 @@ void StopFunction()
 
 void i2c_test_all()
 {
-	masterReceiverTest();
 	masterTransmitterTest();
+	masterReceiverTest();
+	slaveTransmitterTest();
+	slaveReceiverTest();
 }
 
 void masterTransmitterTest()
 {
-	print_dbg("\n\n==============================\nExecutando i2c teste mtx...\n==============================\n");
+	print_dbg("\n\n==============================\nExecutando i2c mtx...\n==============================\n");
 	
 	int i, j, timeout = 10000000, trys;
 	char* text;
@@ -149,6 +157,7 @@ void masterTransmitterTest()
 	for(i = 0; i < TESTS_M_TX_SIZE; i++ )
 	{
 		trys = 0;
+		
 		sprintf(text, "\nTest %d...", (i+1));
 		print_dbg(text);
 		
@@ -160,8 +169,6 @@ void masterTransmitterTest()
 		
 		//Espera o CC se preparar para o teste.
 		delay_ms(CC_PREPARE_TO_TEST_DELAY);
-		
-		//TODO - Fazer a verificacao, utilizando os bytes recebidos pela I2C.
 		
 		/* Aguarda ateh o CC tenha enviado todos os bytes da transmissao de teste. */
 		while( (transmissionEnded != true) && (++trys < timeout) ) {};
@@ -197,32 +204,94 @@ void masterTransmitterTest()
 
 void masterReceiverTest()
 {
-	print_dbg("\n\n==============================\nExecutando i2c teste mrx...\n==============================\n");
+	print_dbg("\n\n==============================\nExecutando i2c mrx...\n==============================\n");
+	
+	int i, timeout = 100000000, trys;
+	cmd_frame_t ansFrame;
+	char* text;
+	bool testResult;
+
+	for(i = 0; i < TESTS_M_RX_SIZE; i++ )
+	{
+		trys = 0;
+		sentBytesCount = 0;
+		runningMrxTest = i; /* Para que a funcao de interrupcao TxFunction saiba qual teste estah sendo executado. */
+		
+		sprintf(text, "\nTest %d...", (i+1));
+		print_dbg(text);
+	
+		//Notifica o CC sobre a execucao do teste e envia o comando.
+		sendTestCmdFrame(tests_M_RX[i]);
+	
+//   	print_dbg("\n\nTest command sent: ");
+//   	printfCmd(tests_M_RX[i]);
+	
+		ansFrame = rcvTestCmdAnswer();
+	
+		if(ansFrame.magicCode != 0)
+		{
+			if( ansFrame.data[0] == RESULT_TEST_FAIL )
+			{
+				print_dbg( " FAIL" );
+			}
+			else
+			{
+				print_dbg( " PASS" );
+			}
+		
+// 			print_dbg("\n\nTest answer received: ");
+// 			printfCmd(ansFrame);
+		}
+		else
+		{
+			print_dbg( " MagicCode error! - FAIL" );
+		}
+	}
+}
+
+void slaveTransmitterTest()
+{
+	print_dbg("\n\n==============================\nExecutando i2c stx...\n==============================\n");
+	
+	int i, j, timeout = 10000000, trys;
+	char* text;
+	bool testResult = true;
+	
+	for(i = 0; i < TESTS_S_TX_SIZE; i++ )
+	{
+		//TODO
+		print_dbg("\nFAIL - Nao implementado");
+	}
+}
+
+void slaveReceiverTest()
+{
+	print_dbg("\n\n==============================\nExecutando i2c srx...\n==============================\n");
 	
 	int i;
 	cmd_frame_t ansFrame;
 	char* text;
 	
-	for(i = 0; i < TESTS_M_RX_SIZE; i++ )
+	for(i = 0; i < TESTS_S_RX_SIZE; i++ )
 	{
 		sprintf(text, "\nTest %d...", (i+1));
 		print_dbg(text);
 		
 		//Notifica o CC sobre a execucao do teste e envia o comando.
- 		sendTestCmdFrame(tests_M_RX[i]);
+ 		sendTestCmdFrame(tests_S_RX[i]);
  		
 //   		print_dbg("\n\nTest command sent: ");
 //   		printfCmd(tests_M_RX[i]);
  		
  		//Espera o CC se preparar para o teste.
  		delay_ms(CC_PREPARE_TO_TEST_DELAY);
- 		twim_write( TWI_MASTER, &tests_M_RX[i].data[0], tests_M_RX[i].dataSize, CUBE_COMPUTER_ADDRESS, false );
+ 		twim_write( TWI_MASTER, &tests_S_RX[i].data[0], tests_S_RX[i].dataSize, CUBE_COMPUTER_ADDRESS, false );
  		
  		ansFrame = rcvTestCmdAnswer();
  		
  		if(ansFrame.magicCode != 0)
  		{
- 			if( ansFrame.data[0] == PARAM_TEST_FAIL )
+ 			if( ansFrame.data[0] == RESULT_TEST_FAIL )
  			{
  				print_dbg( " FAIL" );
  			}
