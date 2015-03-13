@@ -8,9 +8,10 @@
 #include <i2c_tests.h>
 #include <tests_execution_control.h>
 
-const cmd_frame_t tests_M_TX[TESTS_M_TX_SIZE] =
+const cmd_frame_t test_cases[TEST_CASES_COUNT] =
 {
-	{	0x3C7E,			/* magicCode */
+	{	
+		0x3C7E,			/* magicCode */
 		TEST_TYPE_M_TX,	/* testType */
 		1,				/* dataSize */
 		{0x37}			/* data */
@@ -22,10 +23,21 @@ const cmd_frame_t tests_M_TX[TESTS_M_TX_SIZE] =
 		10,				/* dataSize */
 		{0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x10}			/* data */
 	},
-};
+	
+	{
+		0x3C7E,			/* magicCode */
+		TEST_TYPE_M_TX,	/* testType */
+		5,				/* dataSize */
+		{0x37, 0x23, 0x45, 0x67, 0x12}			/* data */
+	},
+	
+	{
+		0x3C7E,			/* magicCode */
+		TEST_TYPE_M_TX,	/* testType */
+		3,				/* dataSize */
+		{0x49, 0x18, 0x23}			/* data */
+	},
 
-const cmd_frame_t tests_M_RX[TESTS_M_RX_SIZE] =
-{
 	{	0x3C7E,			/* magicCode */
 		TEST_TYPE_M_RX,	/* testType */
 		1,				/* dataSize */
@@ -38,10 +50,7 @@ const cmd_frame_t tests_M_RX[TESTS_M_RX_SIZE] =
 		10,				/* dataSize */
 		{0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x10}			/* data */
 	},
-};
 
-const cmd_frame_t tests_S_TX[TESTS_S_TX_SIZE] =
-{
 	{	0x3C7E,			/* magicCode */
 		TEST_TYPE_S_TX,	/* testType */
 		1,				/* dataSize */
@@ -54,10 +63,7 @@ const cmd_frame_t tests_S_TX[TESTS_S_TX_SIZE] =
 		10,				/* dataSize */
 		{0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x10}			/* data */
 	},
-};
 
-const cmd_frame_t tests_S_RX[TESTS_S_RX_SIZE] =
-{
 	{	0x3C7E,			/* magicCode */
 		TEST_TYPE_S_RX,	/* testType */
 		1,				/* dataSize */
@@ -122,7 +128,7 @@ void RxFunction( uint8_t ReceivedData )
 /* TODO - Add Text */
 uint8_t TxFunction()
 {
-	uint8_t byteToSend = tests_M_RX[runningMrxTest].data[sentBytesCount];
+	uint8_t byteToSend = test_cases[runningMrxTest].data[sentBytesCount];
 	
 	sentBytesCount++;
 	
@@ -150,54 +156,54 @@ void masterTransmitterTest()
 {
 	print_dbg("\n\n==============================\nExecutando i2c mtx...\n==============================\n");
 	
-	int i, j, timeout = 10000000, trys;
+	int i, j, timeout = 10000000, trys, countAux = 1;
 	char* text;
 	bool testResult = true;
 	
-	for(i = 0; i < TESTS_M_TX_SIZE; i++ )
+	for(i = 0; i < TEST_CASES_COUNT; i++ )
 	{
-		trys = 0;
-		
-		sprintf(text, "\nTest %d...", (i+1));
-		print_dbg(text);
-		
-		//Notifica o CC sobre a execucao do teste e envia o comando.
-		sendTestCmdFrame(tests_M_TX[i]);
-		
-		//   		print_dbg("\n\nTest command sent: ");
-		//   		printfCmd(tests_M_TX[i]);
-		
-		//Espera o CC se preparar para o teste.
-		delay_ms(CC_PREPARE_TO_TEST_DELAY);
-		
-		/* Aguarda ateh o CC tenha enviado todos os bytes da transmissao de teste. */
-		while( (transmissionEnded != true) && (++trys < timeout) ) {};
-		
-		if( trys >= timeout )
+		if(test_cases[i].testType == TEST_TYPE_M_TX)
 		{
-			print_dbg("\nErro - i2c_tests.c - masterTransmitterTest - timeout");
-			testResult = false;
-		}
+			trys = 0;
 		
-		/* Compara o bytes recebidos com os bytes esperados */
-		for( j = 0; j < receivedBytesCount; j++)
-		{
-			if( i2cBytesBuffer[j] != tests_M_TX[i].data[j] )
+			sprintf(text, "\nTest %d...", countAux++);
+			print_dbg(text);
+		
+			//Notifica o CC sobre a execucao do teste e envia o comando.
+			sendTestCmdFrame(test_cases[i]);
+		
+			//Espera o CC se preparar para o teste.
+			delay_ms(CC_PREPARE_TO_TEST_DELAY);
+		
+			/* Aguarda ateh o CC tenha enviado todos os bytes da transmissao de teste. */
+			while( (transmissionEnded != true) && (++trys < timeout) ) {};
+		
+			if( trys >= timeout )
+			{
+				print_dbg("\nErro - i2c_tests.c - masterTransmitterTest - timeout");
 				testResult = false;
-		}
+			}
 		
-		/* Reseta as flags globais */
-		receivedBytesCount = 0;
-		transmissionEnded = false;
+			/* Compara o bytes recebidos com os bytes esperados */
+			for( j = 0; j < receivedBytesCount; j++)
+			{
+				if( i2cBytesBuffer[j] != test_cases[i].data[j] )
+				testResult = false;
+			}
 		
-		/* Verifica e imprime o resultado do teste */
-		if( testResult == false)
-		{
-			print_dbg( " FAIL" );
-		}
-		else
-		{
-			print_dbg( " PASS" );
+			/* Reseta as flags globais */
+			receivedBytesCount = 0;
+			transmissionEnded = false;
+		
+			/* Verifica e imprime o resultado do teste */
+			if( testResult == false)
+			{
+				print_dbg( " FAIL" );
+			}
+			else
+			{
+				print_dbg( " PASS" );
+			}	
 		}
 	}
 }
@@ -206,45 +212,42 @@ void masterReceiverTest()
 {
 	print_dbg("\n\n==============================\nExecutando i2c mrx...\n==============================\n");
 	
-	int i, timeout = 100000000, trys;
+	int i, timeout = 100000000, trys, countAux = 1;
 	cmd_frame_t ansFrame;
 	char* text;
 	bool testResult;
 
-	for(i = 0; i < TESTS_M_RX_SIZE; i++ )
+	for(i = 0; i < TEST_CASES_COUNT; i++ )
 	{
-		trys = 0;
-		sentBytesCount = 0;
-		runningMrxTest = i; /* Para que a funcao de interrupcao TxFunction saiba qual teste estah sendo executado. */
-		
-		sprintf(text, "\nTest %d...", (i+1));
-		print_dbg(text);
-	
-		//Notifica o CC sobre a execucao do teste e envia o comando.
-		sendTestCmdFrame(tests_M_RX[i]);
-	
-//   	print_dbg("\n\nTest command sent: ");
-//   	printfCmd(tests_M_RX[i]);
-	
-		ansFrame = rcvTestCmdAnswer();
-	
-		if(ansFrame.magicCode != 0)
+		if(test_cases[i].testType == TEST_TYPE_M_RX)
 		{
-			if( ansFrame.data[0] == RESULT_TEST_FAIL )
+			trys = 0;
+			sentBytesCount = 0;
+			runningMrxTest = i; /* Para que a funcao de interrupcao TxFunction saiba qual teste estah sendo executado. */
+			
+			sprintf(text, "\nTest %d...", countAux++);
+			print_dbg(text);
+			
+			//Notifica o CC sobre a execucao do teste e envia o comando.
+			sendTestCmdFrame(test_cases[i]);
+			
+			ansFrame = rcvTestCmdAnswer();
+			
+			if(ansFrame.magicCode != 0)
 			{
-				print_dbg( " FAIL" );
+				if( ansFrame.data[0] == RESULT_TEST_FAIL )
+				{
+					print_dbg( " FAIL" );
+				}
+				else
+				{
+					print_dbg( " PASS" );
+				}
 			}
 			else
 			{
-				print_dbg( " PASS" );
+				print_dbg( " MagicCode error! - FAIL" );
 			}
-		
-// 			print_dbg("\n\nTest answer received: ");
-// 			printfCmd(ansFrame);
-		}
-		else
-		{
-			print_dbg( " MagicCode error! - FAIL" );
 		}
 	}
 }
@@ -252,60 +255,48 @@ void masterReceiverTest()
 void slaveTransmitterTest()
 {
 	print_dbg("\n\n==============================\nExecutando i2c stx...\n==============================\n");
-	
-	int i, j, timeout = 10000000, trys;
-	char* text;
-	bool testResult = true;
-	
-	for(i = 0; i < TESTS_S_TX_SIZE; i++ )
-	{
-		//TODO
-		print_dbg("\nFAIL - Nao implementado");
-	}
+	print_dbg("\nFAIL - Nao implementado");
 }
 
 void slaveReceiverTest()
 {
 	print_dbg("\n\n==============================\nExecutando i2c srx...\n==============================\n");
 	
-	int i;
+	int i, countAux = 1;
 	cmd_frame_t ansFrame;
 	char* text;
 	
-	for(i = 0; i < TESTS_S_RX_SIZE; i++ )
+	for(i = 0; i < TEST_CASES_COUNT; i++ )
 	{
-		sprintf(text, "\nTest %d...", (i+1));
-		print_dbg(text);
-		
-		//Notifica o CC sobre a execucao do teste e envia o comando.
- 		sendTestCmdFrame(tests_S_RX[i]);
- 		
-//   		print_dbg("\n\nTest command sent: ");
-//   		printfCmd(tests_M_RX[i]);
- 		
- 		//Espera o CC se preparar para o teste.
- 		delay_ms(CC_PREPARE_TO_TEST_DELAY);
- 		twim_write( TWI_MASTER, &tests_S_RX[i].data[0], tests_S_RX[i].dataSize, CUBE_COMPUTER_ADDRESS, false );
- 		
- 		ansFrame = rcvTestCmdAnswer();
- 		
- 		if(ansFrame.magicCode != 0)
- 		{
- 			if( ansFrame.data[0] == RESULT_TEST_FAIL )
- 			{
- 				print_dbg( " FAIL" );
- 			}
- 			else
- 			{
- 				print_dbg( " PASS" );
- 			}
- 			
-//  			print_dbg("\n\nTest answer received: ");
-//  			printfCmd(ansFrame);
- 		}
- 		else
- 		{
- 			print_dbg( " MagicCode error! - FAIL" );
- 		}
+		if(test_cases[i].testType == TEST_TYPE_S_RX)
+		{
+			sprintf(text, "\nTest %d...", countAux++);
+			print_dbg(text);
+			
+			//Notifica o CC sobre a execucao do teste e envia o comando.
+			sendTestCmdFrame(test_cases[i]);
+
+			//Espera o CC se preparar para o teste.
+			delay_ms(CC_PREPARE_TO_TEST_DELAY);
+			twim_write( TWI_MASTER, &test_cases[i].data[0], test_cases[i].dataSize, CUBE_COMPUTER_ADDRESS, false );
+			
+			ansFrame = rcvTestCmdAnswer();
+			
+			if(ansFrame.magicCode != 0)
+			{
+				if( ansFrame.data[0] == RESULT_TEST_FAIL )
+				{
+					print_dbg( " FAIL" );
+				}
+				else
+				{
+					print_dbg( " PASS" );
+				}
+			}
+			else
+			{
+				print_dbg( " MagicCode error! - FAIL" );
+			}
+		}
 	}
 }
