@@ -94,7 +94,6 @@ src/terminal_controller.d src/terminal_controller.o \
  ../src/ASF/common/services/clock/genclk.h \
  ../src/ASF/common/services/clock/uc3c/genclk.h \
  ../src/ASF/avr32/drivers/cpu/cycle_counter/cycle_counter.h \
- ../src/ASF/thirdparty/dlmalloc/dlmalloc.h ../src/config/conf_dlmalloc.h \
  ../src/ASF/avr32/drivers/gpio/gpio.h
 
 ../src/terminal_controller.h:
@@ -296,9 +295,5 @@ c:\program\ files\ (x86)\atmel\atmel\ toolchain\avr32\ gcc\native\3.4.1057\avr32
 ../src/ASF/common/services/clock/uc3c/genclk.h:
 
 ../src/ASF/avr32/drivers/cpu/cycle_counter/cycle_counter.h:
-
-../src/ASF/thirdparty/dlmalloc/dlmalloc.h:
-
-../src/config/conf_dlmalloc.h:
 
 ../src/ASF/avr32/drivers/gpio/gpio.h:

@@ -92,7 +92,6 @@ src/i2c_tests.d src/i2c_tests.o src/i2c_tests.o: ../src/i2c_tests.c \
  ../src/ASF/common/services/clock/genclk.h \
  ../src/ASF/common/services/clock/uc3c/genclk.h \
  ../src/ASF/avr32/drivers/cpu/cycle_counter/cycle_counter.h \
- ../src/ASF/thirdparty/dlmalloc/dlmalloc.h ../src/config/conf_dlmalloc.h \
  ../src/ASF/avr32/drivers/twim/twim.h \
  ../src/ASF/avr32/utils/status_codes.h ../src/config/conf_twim.h \
  ../src/ASF/avr32/drivers/twis/twis.h ../src/config/conf_twis.h
@@ -288,10 +287,6 @@ c:\program\ files\ (x86)\atmel\atmel\ toolchain\avr32\ gcc\native\3.4.1057\avr32
 ../src/ASF/common/services/clock/uc3c/genclk.h:
 
 ../src/ASF/avr32/drivers/cpu/cycle_counter/cycle_counter.h:
-
-../src/ASF/thirdparty/dlmalloc/dlmalloc.h:
-
-../src/config/conf_dlmalloc.h:
 
 ../src/ASF/avr32/drivers/twim/twim.h:
 

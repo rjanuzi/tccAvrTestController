@@ -24,7 +24,7 @@
 #define RESULT_TEST_FAIL 0xFF
 #define CC_PREPARE_TO_TEST_DELAY 1000
 
-#define TEST_CASES_COUNT	10
+#define TEST_CASES_COUNT	20
 
 typedef struct __attribute__((__packed__)) {
 	uint16_t NBytes; /* {4, …, 65536} */

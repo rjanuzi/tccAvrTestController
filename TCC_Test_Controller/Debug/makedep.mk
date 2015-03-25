@@ -6,10 +6,6 @@ src\ASF\avr32\drivers\twim\twim.c
 
 src\ASF\avr32\drivers\twis\twis.c
 
-src\ASF\thirdparty\dlmalloc\dlmalloc.c
-
-src\ASF\thirdparty\dlmalloc\dlsbrk.c
-
 src\i2c_tests.c
 
 src\terminal_controller.c

@@ -16,7 +16,6 @@
 #include <string.h>
 #include <stdio.h>
 #include <delay.h>
-#include <dlmalloc.h>
 
 #define DATA_MAX_SIZE	255 /* utilizando um byte para o paramSize (2^8) */
 

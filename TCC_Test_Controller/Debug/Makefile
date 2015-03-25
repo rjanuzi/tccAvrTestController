@@ -64,9 +64,6 @@ SUBDIRS :=  \
 ../src/ASF/common/services/delay/ \
 ../src/ASF/common/utils/ \
 ../src/ASF/common/utils/interrupt/ \
-../src/ASF/thirdparty/ \
-../src/ASF/thirdparty/dlmalloc/ \
-../src/ASF/thirdparty/dlmalloc/docsrc/ \
 ../src/config/
 
 
@@ -74,8 +71,6 @@ SUBDIRS :=  \
 C_SRCS +=  \
 ../src/ASF/avr32/drivers/twim/twim.c \
 ../src/ASF/avr32/drivers/twis/twis.c \
-../src/ASF/thirdparty/dlmalloc/dlmalloc.c \
-../src/ASF/thirdparty/dlmalloc/dlsbrk.c \
 ../src/i2c_tests.c \
 ../src/terminal_controller.c \
 ../src/tests_execution_control.c \
@@ -103,8 +98,6 @@ ASM_SRCS +=
 OBJS +=  \
 src/ASF/avr32/drivers/twim/twim.o \
 src/ASF/avr32/drivers/twis/twis.o \
-src/ASF/thirdparty/dlmalloc/dlmalloc.o \
-src/ASF/thirdparty/dlmalloc/dlsbrk.o \
 src/i2c_tests.o \
 src/terminal_controller.o \
 src/tests_execution_control.o \
@@ -125,8 +118,6 @@ src/tcc_test_controller.o
 OBJS_AS_ARGS +=  \
 src/ASF/avr32/drivers/twim/twim.o \
 src/ASF/avr32/drivers/twis/twis.o \
-src/ASF/thirdparty/dlmalloc/dlmalloc.o \
-src/ASF/thirdparty/dlmalloc/dlsbrk.o \
 src/i2c_tests.o \
 src/terminal_controller.o \
 src/tests_execution_control.o \
@@ -147,8 +138,6 @@ src/tcc_test_controller.o
 C_DEPS +=  \
 src/ASF/avr32/drivers/twim/twim.d \
 src/ASF/avr32/drivers/twis/twis.d \
-src/ASF/thirdparty/dlmalloc/dlmalloc.d \
-src/ASF/thirdparty/dlmalloc/dlsbrk.d \
 src/i2c_tests.d \
 src/terminal_controller.d \
 src/tests_execution_control.d \
@@ -169,8 +158,6 @@ src/tcc_test_controller.d
 C_DEPS_AS_ARGS +=  \
 src/ASF/avr32/drivers/twim/twim.d \
 src/ASF/avr32/drivers/twis/twis.d \
-src/ASF/thirdparty/dlmalloc/dlmalloc.d \
-src/ASF/thirdparty/dlmalloc/dlsbrk.d \
 src/i2c_tests.d \
 src/terminal_controller.d \
 src/tests_execution_control.d \
@@ -230,77 +217,66 @@ LIB_DEP+=
 
 
 
-
-
-
-
 src/ASF/avr32/drivers/twim/%.o: ../src/ASF/avr32/drivers/twim/%.c
 	@echo Building file: $<
 	@echo Invoking: AVR32/GNU C Compiler : 4.4.7
-	$(QUOTE)C:\Program Files (x86)\Atmel\Atmel Toolchain\AVR32 GCC\Native\3.4.1057\avr32-gnu-toolchain\bin\avr32-gcc.exe$(QUOTE)  -x c -DDEBUG -DBOARD=STK600_RCUC3C0  -I"../common/applications/user_application/at32uc3c0512c_stk600-rcuc3c0/config" -I"../src/ASF/avr32/utils" -I"../src/ASF/avr32/drivers/gpio" -I"../src/ASF/common/boards" -I"../src/config" -I"../src/ASF/avr32/utils/preprocessor" -I"../src/ASF/avr32/boards/stk600/rcuc3c0" -I"../src/ASF/avr32/drivers/intc" -I"../src/ASF/common/utils" -I"../src" -I"../src/ASF/avr32/boards" -I"../src/ASF/avr32/drivers/cpu/cycle_counter" -I"../src/ASF/avr32/drivers/flashc" -I"../src/ASF/avr32/drivers/usart" -I"../src/ASF/common/services/clock" -I"../src/ASF/common/services/delay" -I"../src/ASF/thirdparty/dlmalloc" -I"../src/ASF/avr32/drivers/twim" -I"../src/ASF/avr32/drivers/twis"  -O1 -fdata-sections -ffunction-sections -masm-addr-pseudos -g3 -Wall -mpart=uc3c0512c -c -std=gnu99 -fno-strict-aliasing -Wstrict-prototypes -Wmissing-prototypes -Werror-implicit-function-declaration -Wpointer-arith -mrelax -mno-cond-exec-before-reload -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)"   -o "$@" "$<" 
+	$(QUOTE)C:\Program Files (x86)\Atmel\Atmel Toolchain\AVR32 GCC\Native\3.4.1057\avr32-gnu-toolchain\bin\avr32-gcc.exe$(QUOTE)  -x c -DDEBUG -DBOARD=STK600_RCUC3C0  -I"../common/applications/user_application/at32uc3c0512c_stk600-rcuc3c0/config" -I"../src/ASF/avr32/utils" -I"../src/ASF/avr32/drivers/gpio" -I"../src/ASF/common/boards" -I"../src/config" -I"../src/ASF/avr32/utils/preprocessor" -I"../src/ASF/avr32/boards/stk600/rcuc3c0" -I"../src/ASF/avr32/drivers/intc" -I"../src/ASF/common/utils" -I"../src" -I"../src/ASF/avr32/boards" -I"../src/ASF/avr32/drivers/cpu/cycle_counter" -I"../src/ASF/avr32/drivers/flashc" -I"../src/ASF/avr32/drivers/usart" -I"../src/ASF/common/services/clock" -I"../src/ASF/common/services/delay" -I"../src/ASF/avr32/drivers/twim" -I"../src/ASF/avr32/drivers/twis"  -O1 -fdata-sections -ffunction-sections -masm-addr-pseudos -g3 -Wall -mpart=uc3c0512c -c -std=gnu99 -fno-strict-aliasing -Wstrict-prototypes -Wmissing-prototypes -Werror-implicit-function-declaration -Wpointer-arith -mrelax -mno-cond-exec-before-reload -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)"   -o "$@" "$<" 
 	@echo Finished building: $<
 	
 
 src/ASF/avr32/drivers/twis/%.o: ../src/ASF/avr32/drivers/twis/%.c
 	@echo Building file: $<
 	@echo Invoking: AVR32/GNU C Compiler : 4.4.7
-	$(QUOTE)C:\Program Files (x86)\Atmel\Atmel Toolchain\AVR32 GCC\Native\3.4.1057\avr32-gnu-toolchain\bin\avr32-gcc.exe$(QUOTE)  -x c -DDEBUG -DBOARD=STK600_RCUC3C0  -I"../common/applications/user_application/at32uc3c0512c_stk600-rcuc3c0/config" -I"../src/ASF/avr32/utils" -I"../src/ASF/avr32/drivers/gpio" -I"../src/ASF/common/boards" -I"../src/config" -I"../src/ASF/avr32/utils/preprocessor" -I"../src/ASF/avr32/boards/stk600/rcuc3c0" -I"../src/ASF/avr32/drivers/intc" -I"../src/ASF/common/utils" -I"../src" -I"../src/ASF/avr32/boards" -I"../src/ASF/avr32/drivers/cpu/cycle_counter" -I"../src/ASF/avr32/drivers/flashc" -I"../src/ASF/avr32/drivers/usart" -I"../src/ASF/common/services/clock" -I"../src/ASF/common/services/delay" -I"../src/ASF/thirdparty/dlmalloc" -I"../src/ASF/avr32/drivers/twim" -I"../src/ASF/avr32/drivers/twis"  -O1 -fdata-sections -ffunction-sections -masm-addr-pseudos -g3 -Wall -mpart=uc3c0512c -c -std=gnu99 -fno-strict-aliasing -Wstrict-prototypes -Wmissing-prototypes -Werror-implicit-function-declaration -Wpointer-arith -mrelax -mno-cond-exec-before-reload -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)"   -o "$@" "$<" 
-	@echo Finished building: $<
-	
-
-src/ASF/thirdparty/dlmalloc/%.o: ../src/ASF/thirdparty/dlmalloc/%.c
-	@echo Building file: $<
-	@echo Invoking: AVR32/GNU C Compiler : 4.4.7
-	$(QUOTE)C:\Program Files (x86)\Atmel\Atmel Toolchain\AVR32 GCC\Native\3.4.1057\avr32-gnu-toolchain\bin\avr32-gcc.exe$(QUOTE)  -x c -DDEBUG -DBOARD=STK600_RCUC3C0  -I"../common/applications/user_application/at32uc3c0512c_stk600-rcuc3c0/config" -I"../src/ASF/avr32/utils" -I"../src/ASF/avr32/drivers/gpio" -I"../src/ASF/common/boards" -I"../src/config" -I"../src/ASF/avr32/utils/preprocessor" -I"../src/ASF/avr32/boards/stk600/rcuc3c0" -I"../src/ASF/avr32/drivers/intc" -I"../src/ASF/common/utils" -I"../src" -I"../src/ASF/avr32/boards" -I"../src/ASF/avr32/drivers/cpu/cycle_counter" -I"../src/ASF/avr32/drivers/flashc" -I"../src/ASF/avr32/drivers/usart" -I"../src/ASF/common/services/clock" -I"../src/ASF/common/services/delay" -I"../src/ASF/thirdparty/dlmalloc" -I"../src/ASF/avr32/drivers/twim" -I"../src/ASF/avr32/drivers/twis"  -O1 -fdata-sections -ffunction-sections -masm-addr-pseudos -g3 -Wall -mpart=uc3c0512c -c -std=gnu99 -fno-strict-aliasing -Wstrict-prototypes -Wmissing-prototypes -Werror-implicit-function-declaration -Wpointer-arith -mrelax -mno-cond-exec-before-reload -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)"   -o "$@" "$<" 
+	$(QUOTE)C:\Program Files (x86)\Atmel\Atmel Toolchain\AVR32 GCC\Native\3.4.1057\avr32-gnu-toolchain\bin\avr32-gcc.exe$(QUOTE)  -x c -DDEBUG -DBOARD=STK600_RCUC3C0  -I"../common/applications/user_application/at32uc3c0512c_stk600-rcuc3c0/config" -I"../src/ASF/avr32/utils" -I"../src/ASF/avr32/drivers/gpio" -I"../src/ASF/common/boards" -I"../src/config" -I"../src/ASF/avr32/utils/preprocessor" -I"../src/ASF/avr32/boards/stk600/rcuc3c0" -I"../src/ASF/avr32/drivers/intc" -I"../src/ASF/common/utils" -I"../src" -I"../src/ASF/avr32/boards" -I"../src/ASF/avr32/drivers/cpu/cycle_counter" -I"../src/ASF/avr32/drivers/flashc" -I"../src/ASF/avr32/drivers/usart" -I"../src/ASF/common/services/clock" -I"../src/ASF/common/services/delay" -I"../src/ASF/avr32/drivers/twim" -I"../src/ASF/avr32/drivers/twis"  -O1 -fdata-sections -ffunction-sections -masm-addr-pseudos -g3 -Wall -mpart=uc3c0512c -c -std=gnu99 -fno-strict-aliasing -Wstrict-prototypes -Wmissing-prototypes -Werror-implicit-function-declaration -Wpointer-arith -mrelax -mno-cond-exec-before-reload -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)"   -o "$@" "$<" 
 	@echo Finished building: $<
 	
 
 src/%.o: ../src/%.c
 	@echo Building file: $<
 	@echo Invoking: AVR32/GNU C Compiler : 4.4.7
-	$(QUOTE)C:\Program Files (x86)\Atmel\Atmel Toolchain\AVR32 GCC\Native\3.4.1057\avr32-gnu-toolchain\bin\avr32-gcc.exe$(QUOTE)  -x c -DDEBUG -DBOARD=STK600_RCUC3C0  -I"../common/applications/user_application/at32uc3c0512c_stk600-rcuc3c0/config" -I"../src/ASF/avr32/utils" -I"../src/ASF/avr32/drivers/gpio" -I"../src/ASF/common/boards" -I"../src/config" -I"../src/ASF/avr32/utils/preprocessor" -I"../src/ASF/avr32/boards/stk600/rcuc3c0" -I"../src/ASF/avr32/drivers/intc" -I"../src/ASF/common/utils" -I"../src" -I"../src/ASF/avr32/boards" -I"../src/ASF/avr32/drivers/cpu/cycle_counter" -I"../src/ASF/avr32/drivers/flashc" -I"../src/ASF/avr32/drivers/usart" -I"../src/ASF/common/services/clock" -I"../src/ASF/common/services/delay" -I"../src/ASF/thirdparty/dlmalloc" -I"../src/ASF/avr32/drivers/twim" -I"../src/ASF/avr32/drivers/twis"  -O1 -fdata-sections -ffunction-sections -masm-addr-pseudos -g3 -Wall -mpart=uc3c0512c -c -std=gnu99 -fno-strict-aliasing -Wstrict-prototypes -Wmissing-prototypes -Werror-implicit-function-declaration -Wpointer-arith -mrelax -mno-cond-exec-before-reload -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)"   -o "$@" "$<" 
+	$(QUOTE)C:\Program Files (x86)\Atmel\Atmel Toolchain\AVR32 GCC\Native\3.4.1057\avr32-gnu-toolchain\bin\avr32-gcc.exe$(QUOTE)  -x c -DDEBUG -DBOARD=STK600_RCUC3C0  -I"../common/applications/user_application/at32uc3c0512c_stk600-rcuc3c0/config" -I"../src/ASF/avr32/utils" -I"../src/ASF/avr32/drivers/gpio" -I"../src/ASF/common/boards" -I"../src/config" -I"../src/ASF/avr32/utils/preprocessor" -I"../src/ASF/avr32/boards/stk600/rcuc3c0" -I"../src/ASF/avr32/drivers/intc" -I"../src/ASF/common/utils" -I"../src" -I"../src/ASF/avr32/boards" -I"../src/ASF/avr32/drivers/cpu/cycle_counter" -I"../src/ASF/avr32/drivers/flashc" -I"../src/ASF/avr32/drivers/usart" -I"../src/ASF/common/services/clock" -I"../src/ASF/common/services/delay" -I"../src/ASF/avr32/drivers/twim" -I"../src/ASF/avr32/drivers/twis"  -O1 -fdata-sections -ffunction-sections -masm-addr-pseudos -g3 -Wall -mpart=uc3c0512c -c -std=gnu99 -fno-strict-aliasing -Wstrict-prototypes -Wmissing-prototypes -Werror-implicit-function-declaration -Wpointer-arith -mrelax -mno-cond-exec-before-reload -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)"   -o "$@" "$<" 
 	@echo Finished building: $<
 	
 
 src/ASF/avr32/boards/stk600/rcuc3c0/%.o: ../src/ASF/avr32/boards/stk600/rcuc3c0/%.c
 	@echo Building file: $<
 	@echo Invoking: AVR32/GNU C Compiler : 4.4.7
-	$(QUOTE)C:\Program Files (x86)\Atmel\Atmel Toolchain\AVR32 GCC\Native\3.4.1057\avr32-gnu-toolchain\bin\avr32-gcc.exe$(QUOTE)  -x c -DDEBUG -DBOARD=STK600_RCUC3C0  -I"../common/applications/user_application/at32uc3c0512c_stk600-rcuc3c0/config" -I"../src/ASF/avr32/utils" -I"../src/ASF/avr32/drivers/gpio" -I"../src/ASF/common/boards" -I"../src/config" -I"../src/ASF/avr32/utils/preprocessor" -I"../src/ASF/avr32/boards/stk600/rcuc3c0" -I"../src/ASF/avr32/drivers/intc" -I"../src/ASF/common/utils" -I"../src" -I"../src/ASF/avr32/boards" -I"../src/ASF/avr32/drivers/cpu/cycle_counter" -I"../src/ASF/avr32/drivers/flashc" -I"../src/ASF/avr32/drivers/usart" -I"../src/ASF/common/services/clock" -I"../src/ASF/common/services/delay" -I"../src/ASF/thirdparty/dlmalloc" -I"../src/ASF/avr32/drivers/twim" -I"../src/ASF/avr32/drivers/twis"  -O1 -fdata-sections -ffunction-sections -masm-addr-pseudos -g3 -Wall -mpart=uc3c0512c -c -std=gnu99 -fno-strict-aliasing -Wstrict-prototypes -Wmissing-prototypes -Werror-implicit-function-declaration -Wpointer-arith -mrelax -mno-cond-exec-before-reload -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)"   -o "$@" "$<" 
+	$(QUOTE)C:\Program Files (x86)\Atmel\Atmel Toolchain\AVR32 GCC\Native\3.4.1057\avr32-gnu-toolchain\bin\avr32-gcc.exe$(QUOTE)  -x c -DDEBUG -DBOARD=STK600_RCUC3C0  -I"../common/applications/user_application/at32uc3c0512c_stk600-rcuc3c0/config" -I"../src/ASF/avr32/utils" -I"../src/ASF/avr32/drivers/gpio" -I"../src/ASF/common/boards" -I"../src/config" -I"../src/ASF/avr32/utils/preprocessor" -I"../src/ASF/avr32/boards/stk600/rcuc3c0" -I"../src/ASF/avr32/drivers/intc" -I"../src/ASF/common/utils" -I"../src" -I"../src/ASF/avr32/boards" -I"../src/ASF/avr32/drivers/cpu/cycle_counter" -I"../src/ASF/avr32/drivers/flashc" -I"../src/ASF/avr32/drivers/usart" -I"../src/ASF/common/services/clock" -I"../src/ASF/common/services/delay" -I"../src/ASF/avr32/drivers/twim" -I"../src/ASF/avr32/drivers/twis"  -O1 -fdata-sections -ffunction-sections -masm-addr-pseudos -g3 -Wall -mpart=uc3c0512c -c -std=gnu99 -fno-strict-aliasing -Wstrict-prototypes -Wmissing-prototypes -Werror-implicit-function-declaration -Wpointer-arith -mrelax -mno-cond-exec-before-reload -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)"   -o "$@" "$<" 
 	@echo Finished building: $<
 	
 
 src/ASF/avr32/drivers/flashc/%.o: ../src/ASF/avr32/drivers/flashc/%.c
 	@echo Building file: $<
 	@echo Invoking: AVR32/GNU C Compiler : 4.4.7
-	$(QUOTE)C:\Program Files (x86)\Atmel\Atmel Toolchain\AVR32 GCC\Native\3.4.1057\avr32-gnu-toolchain\bin\avr32-gcc.exe$(QUOTE)  -x c -DDEBUG -DBOARD=STK600_RCUC3C0  -I"../common/applications/user_application/at32uc3c0512c_stk600-rcuc3c0/config" -I"../src/ASF/avr32/utils" -I"../src/ASF/avr32/drivers/gpio" -I"../src/ASF/common/boards" -I"../src/config" -I"../src/ASF/avr32/utils/preprocessor" -I"../src/ASF/avr32/boards/stk600/rcuc3c0" -I"../src/ASF/avr32/drivers/intc" -I"../src/ASF/common/utils" -I"../src" -I"../src/ASF/avr32/boards" -I"../src/ASF/avr32/drivers/cpu/cycle_counter" -I"../src/ASF/avr32/drivers/flashc" -I"../src/ASF/avr32/drivers/usart" -I"../src/ASF/common/services/clock" -I"../src/ASF/common/services/delay" -I"../src/ASF/thirdparty/dlmalloc" -I"../src/ASF/avr32/drivers/twim" -I"../src/ASF/avr32/drivers/twis"  -O1 -fdata-sections -ffunction-sections -masm-addr-pseudos -g3 -Wall -mpart=uc3c0512c -c -std=gnu99 -fno-strict-aliasing -Wstrict-prototypes -Wmissing-prototypes -Werror-implicit-function-declaration -Wpointer-arith -mrelax -mno-cond-exec-before-reload -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)"   -o "$@" "$<" 
+	$(QUOTE)C:\Program Files (x86)\Atmel\Atmel Toolchain\AVR32 GCC\Native\3.4.1057\avr32-gnu-toolchain\bin\avr32-gcc.exe$(QUOTE)  -x c -DDEBUG -DBOARD=STK600_RCUC3C0  -I"../common/applications/user_application/at32uc3c0512c_stk600-rcuc3c0/config" -I"../src/ASF/avr32/utils" -I"../src/ASF/avr32/drivers/gpio" -I"../src/ASF/common/boards" -I"../src/config" -I"../src/ASF/avr32/utils/preprocessor" -I"../src/ASF/avr32/boards/stk600/rcuc3c0" -I"../src/ASF/avr32/drivers/intc" -I"../src/ASF/common/utils" -I"../src" -I"../src/ASF/avr32/boards" -I"../src/ASF/avr32/drivers/cpu/cycle_counter" -I"../src/ASF/avr32/drivers/flashc" -I"../src/ASF/avr32/drivers/usart" -I"../src/ASF/common/services/clock" -I"../src/ASF/common/services/delay" -I"../src/ASF/avr32/drivers/twim" -I"../src/ASF/avr32/drivers/twis"  -O1 -fdata-sections -ffunction-sections -masm-addr-pseudos -g3 -Wall -mpart=uc3c0512c -c -std=gnu99 -fno-strict-aliasing -Wstrict-prototypes -Wmissing-prototypes -Werror-implicit-function-declaration -Wpointer-arith -mrelax -mno-cond-exec-before-reload -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)"   -o "$@" "$<" 
 	@echo Finished building: $<
 	
 
 src/ASF/avr32/drivers/gpio/%.o: ../src/ASF/avr32/drivers/gpio/%.c
 	@echo Building file: $<
 	@echo Invoking: AVR32/GNU C Compiler : 4.4.7
-	$(QUOTE)C:\Program Files (x86)\Atmel\Atmel Toolchain\AVR32 GCC\Native\3.4.1057\avr32-gnu-toolchain\bin\avr32-gcc.exe$(QUOTE)  -x c -DDEBUG -DBOARD=STK600_RCUC3C0  -I"../common/applications/user_application/at32uc3c0512c_stk600-rcuc3c0/config" -I"../src/ASF/avr32/utils" -I"../src/ASF/avr32/drivers/gpio" -I"../src/ASF/common/boards" -I"../src/config" -I"../src/ASF/avr32/utils/preprocessor" -I"../src/ASF/avr32/boards/stk600/rcuc3c0" -I"../src/ASF/avr32/drivers/intc" -I"../src/ASF/common/utils" -I"../src" -I"../src/ASF/avr32/boards" -I"../src/ASF/avr32/drivers/cpu/cycle_counter" -I"../src/ASF/avr32/drivers/flashc" -I"../src/ASF/avr32/drivers/usart" -I"../src/ASF/common/services/clock" -I"../src/ASF/common/services/delay" -I"../src/ASF/thirdparty/dlmalloc" -I"../src/ASF/avr32/drivers/twim" -I"../src/ASF/avr32/drivers/twis"  -O1 -fdata-sections -ffunction-sections -masm-addr-pseudos -g3 -Wall -mpart=uc3c0512c -c -std=gnu99 -fno-strict-aliasing -Wstrict-prototypes -Wmissing-prototypes -Werror-implicit-function-declaration -Wpointer-arith -mrelax -mno-cond-exec-before-reload -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)"   -o "$@" "$<" 
+	$(QUOTE)C:\Program Files (x86)\Atmel\Atmel Toolchain\AVR32 GCC\Native\3.4.1057\avr32-gnu-toolchain\bin\avr32-gcc.exe$(QUOTE)  -x c -DDEBUG -DBOARD=STK600_RCUC3C0  -I"../common/applications/user_application/at32uc3c0512c_stk600-rcuc3c0/config" -I"../src/ASF/avr32/utils" -I"../src/ASF/avr32/drivers/gpio" -I"../src/ASF/common/boards" -I"../src/config" -I"../src/ASF/avr32/utils/preprocessor" -I"../src/ASF/avr32/boards/stk600/rcuc3c0" -I"../src/ASF/avr32/drivers/intc" -I"../src/ASF/common/utils" -I"../src" -I"../src/ASF/avr32/boards" -I"../src/ASF/avr32/drivers/cpu/cycle_counter" -I"../src/ASF/avr32/drivers/flashc" -I"../src/ASF/avr32/drivers/usart" -I"../src/ASF/common/services/clock" -I"../src/ASF/common/services/delay" -I"../src/ASF/avr32/drivers/twim" -I"../src/ASF/avr32/drivers/twis"  -O1 -fdata-sections -ffunction-sections -masm-addr-pseudos -g3 -Wall -mpart=uc3c0512c -c -std=gnu99 -fno-strict-aliasing -Wstrict-prototypes -Wmissing-prototypes -Werror-implicit-function-declaration -Wpointer-arith -mrelax -mno-cond-exec-before-reload -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)"   -o "$@" "$<" 
 	@echo Finished building: $<
 	
 
 src/ASF/avr32/drivers/intc/%.o: ../src/ASF/avr32/drivers/intc/%.c
 	@echo Building file: $<
 	@echo Invoking: AVR32/GNU C Compiler : 4.4.7
-	$(QUOTE)C:\Program Files (x86)\Atmel\Atmel Toolchain\AVR32 GCC\Native\3.4.1057\avr32-gnu-toolchain\bin\avr32-gcc.exe$(QUOTE)  -x c -DDEBUG -DBOARD=STK600_RCUC3C0  -I"../common/applications/user_application/at32uc3c0512c_stk600-rcuc3c0/config" -I"../src/ASF/avr32/utils" -I"../src/ASF/avr32/drivers/gpio" -I"../src/ASF/common/boards" -I"../src/config" -I"../src/ASF/avr32/utils/preprocessor" -I"../src/ASF/avr32/boards/stk600/rcuc3c0" -I"../src/ASF/avr32/drivers/intc" -I"../src/ASF/common/utils" -I"../src" -I"../src/ASF/avr32/boards" -I"../src/ASF/avr32/drivers/cpu/cycle_counter" -I"../src/ASF/avr32/drivers/flashc" -I"../src/ASF/avr32/drivers/usart" -I"../src/ASF/common/services/clock" -I"../src/ASF/common/services/delay" -I"../src/ASF/thirdparty/dlmalloc" -I"../src/ASF/avr32/drivers/twim" -I"../src/ASF/avr32/drivers/twis"  -O1 -fdata-sections -ffunction-sections -masm-addr-pseudos -g3 -Wall -mpart=uc3c0512c -c -std=gnu99 -fno-strict-aliasing -Wstrict-prototypes -Wmissing-prototypes -Werror-implicit-function-declaration -Wpointer-arith -mrelax -mno-cond-exec-before-reload -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)"   -o "$@" "$<" 
+	$(QUOTE)C:\Program Files (x86)\Atmel\Atmel Toolchain\AVR32 GCC\Native\3.4.1057\avr32-gnu-toolchain\bin\avr32-gcc.exe$(QUOTE)  -x c -DDEBUG -DBOARD=STK600_RCUC3C0  -I"../common/applications/user_application/at32uc3c0512c_stk600-rcuc3c0/config" -I"../src/ASF/avr32/utils" -I"../src/ASF/avr32/drivers/gpio" -I"../src/ASF/common/boards" -I"../src/config" -I"../src/ASF/avr32/utils/preprocessor" -I"../src/ASF/avr32/boards/stk600/rcuc3c0" -I"../src/ASF/avr32/drivers/intc" -I"../src/ASF/common/utils" -I"../src" -I"../src/ASF/avr32/boards" -I"../src/ASF/avr32/drivers/cpu/cycle_counter" -I"../src/ASF/avr32/drivers/flashc" -I"../src/ASF/avr32/drivers/usart" -I"../src/ASF/common/services/clock" -I"../src/ASF/common/services/delay" -I"../src/ASF/avr32/drivers/twim" -I"../src/ASF/avr32/drivers/twis"  -O1 -fdata-sections -ffunction-sections -masm-addr-pseudos -g3 -Wall -mpart=uc3c0512c -c -std=gnu99 -fno-strict-aliasing -Wstrict-prototypes -Wmissing-prototypes -Werror-implicit-function-declaration -Wpointer-arith -mrelax -mno-cond-exec-before-reload -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)"   -o "$@" "$<" 
 	@echo Finished building: $<
 	
 
 src/ASF/avr32/drivers/usart/%.o: ../src/ASF/avr32/drivers/usart/%.c
 	@echo Building file: $<
 	@echo Invoking: AVR32/GNU C Compiler : 4.4.7
-	$(QUOTE)C:\Program Files (x86)\Atmel\Atmel Toolchain\AVR32 GCC\Native\3.4.1057\avr32-gnu-toolchain\bin\avr32-gcc.exe$(QUOTE)  -x c -DDEBUG -DBOARD=STK600_RCUC3C0  -I"../common/applications/user_application/at32uc3c0512c_stk600-rcuc3c0/config" -I"../src/ASF/avr32/utils" -I"../src/ASF/avr32/drivers/gpio" -I"../src/ASF/common/boards" -I"../src/config" -I"../src/ASF/avr32/utils/preprocessor" -I"../src/ASF/avr32/boards/stk600/rcuc3c0" -I"../src/ASF/avr32/drivers/intc" -I"../src/ASF/common/utils" -I"../src" -I"../src/ASF/avr32/boards" -I"../src/ASF/avr32/drivers/cpu/cycle_counter" -I"../src/ASF/avr32/drivers/flashc" -I"../src/ASF/avr32/drivers/usart" -I"../src/ASF/common/services/clock" -I"../src/ASF/common/services/delay" -I"../src/ASF/thirdparty/dlmalloc" -I"../src/ASF/avr32/drivers/twim" -I"../src/ASF/avr32/drivers/twis"  -O1 -fdata-sections -ffunction-sections -masm-addr-pseudos -g3 -Wall -mpart=uc3c0512c -c -std=gnu99 -fno-strict-aliasing -Wstrict-prototypes -Wmissing-prototypes -Werror-implicit-function-declaration -Wpointer-arith -mrelax -mno-cond-exec-before-reload -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)"   -o "$@" "$<" 
+	$(QUOTE)C:\Program Files (x86)\Atmel\Atmel Toolchain\AVR32 GCC\Native\3.4.1057\avr32-gnu-toolchain\bin\avr32-gcc.exe$(QUOTE)  -x c -DDEBUG -DBOARD=STK600_RCUC3C0  -I"../common/applications/user_application/at32uc3c0512c_stk600-rcuc3c0/config" -I"../src/ASF/avr32/utils" -I"../src/ASF/avr32/drivers/gpio" -I"../src/ASF/common/boards" -I"../src/config" -I"../src/ASF/avr32/utils/preprocessor" -I"../src/ASF/avr32/boards/stk600/rcuc3c0" -I"../src/ASF/avr32/drivers/intc" -I"../src/ASF/common/utils" -I"../src" -I"../src/ASF/avr32/boards" -I"../src/ASF/avr32/drivers/cpu/cycle_counter" -I"../src/ASF/avr32/drivers/flashc" -I"../src/ASF/avr32/drivers/usart" -I"../src/ASF/common/services/clock" -I"../src/ASF/common/services/delay" -I"../src/ASF/avr32/drivers/twim" -I"../src/ASF/avr32/drivers/twis"  -O1 -fdata-sections -ffunction-sections -masm-addr-pseudos -g3 -Wall -mpart=uc3c0512c -c -std=gnu99 -fno-strict-aliasing -Wstrict-prototypes -Wmissing-prototypes -Werror-implicit-function-declaration -Wpointer-arith -mrelax -mno-cond-exec-before-reload -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)"   -o "$@" "$<" 
 	@echo Finished building: $<
 	
 
 src/ASF/common/services/clock/uc3c/%.o: ../src/ASF/common/services/clock/uc3c/%.c
 	@echo Building file: $<
 	@echo Invoking: AVR32/GNU C Compiler : 4.4.7
-	$(QUOTE)C:\Program Files (x86)\Atmel\Atmel Toolchain\AVR32 GCC\Native\3.4.1057\avr32-gnu-toolchain\bin\avr32-gcc.exe$(QUOTE)  -x c -DDEBUG -DBOARD=STK600_RCUC3C0  -I"../common/applications/user_application/at32uc3c0512c_stk600-rcuc3c0/config" -I"../src/ASF/avr32/utils" -I"../src/ASF/avr32/drivers/gpio" -I"../src/ASF/common/boards" -I"../src/config" -I"../src/ASF/avr32/utils/preprocessor" -I"../src/ASF/avr32/boards/stk600/rcuc3c0" -I"../src/ASF/avr32/drivers/intc" -I"../src/ASF/common/utils" -I"../src" -I"../src/ASF/avr32/boards" -I"../src/ASF/avr32/drivers/cpu/cycle_counter" -I"../src/ASF/avr32/drivers/flashc" -I"../src/ASF/avr32/drivers/usart" -I"../src/ASF/common/services/clock" -I"../src/ASF/common/services/delay" -I"../src/ASF/thirdparty/dlmalloc" -I"../src/ASF/avr32/drivers/twim" -I"../src/ASF/avr32/drivers/twis"  -O1 -fdata-sections -ffunction-sections -masm-addr-pseudos -g3 -Wall -mpart=uc3c0512c -c -std=gnu99 -fno-strict-aliasing -Wstrict-prototypes -Wmissing-prototypes -Werror-implicit-function-declaration -Wpointer-arith -mrelax -mno-cond-exec-before-reload -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)"   -o "$@" "$<" 
+	$(QUOTE)C:\Program Files (x86)\Atmel\Atmel Toolchain\AVR32 GCC\Native\3.4.1057\avr32-gnu-toolchain\bin\avr32-gcc.exe$(QUOTE)  -x c -DDEBUG -DBOARD=STK600_RCUC3C0  -I"../common/applications/user_application/at32uc3c0512c_stk600-rcuc3c0/config" -I"../src/ASF/avr32/utils" -I"../src/ASF/avr32/drivers/gpio" -I"../src/ASF/common/boards" -I"../src/config" -I"../src/ASF/avr32/utils/preprocessor" -I"../src/ASF/avr32/boards/stk600/rcuc3c0" -I"../src/ASF/avr32/drivers/intc" -I"../src/ASF/common/utils" -I"../src" -I"../src/ASF/avr32/boards" -I"../src/ASF/avr32/drivers/cpu/cycle_counter" -I"../src/ASF/avr32/drivers/flashc" -I"../src/ASF/avr32/drivers/usart" -I"../src/ASF/common/services/clock" -I"../src/ASF/common/services/delay" -I"../src/ASF/avr32/drivers/twim" -I"../src/ASF/avr32/drivers/twis"  -O1 -fdata-sections -ffunction-sections -masm-addr-pseudos -g3 -Wall -mpart=uc3c0512c -c -std=gnu99 -fno-strict-aliasing -Wstrict-prototypes -Wmissing-prototypes -Werror-implicit-function-declaration -Wpointer-arith -mrelax -mno-cond-exec-before-reload -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)"   -o "$@" "$<" 
 	@echo Finished building: $<
 	
 
@@ -311,42 +287,42 @@ src/ASF/common/services/clock/uc3c/%.o: ../src/ASF/common/services/clock/uc3c/%.
 src/ASF/avr32/drivers/intc/%.o: ../src/ASF/avr32/drivers/intc/%.S
 	@echo Building file: $<
 	@echo Invoking: AVR32/GNU Preprocessing Assembler : 4.4.7
-	$(QUOTE)C:\Program Files (x86)\Atmel\Atmel Toolchain\AVR32 GCC\Native\3.4.1057\avr32-gnu-toolchain\bin\avr32-gcc.exe$(QUOTE) -x assembler-with-cpp -c -mpart=uc3c0512c -mrelax -DBOARD=STK600_RCUC3C0 -I "../common/applications/user_application/at32uc3c0512c_stk600-rcuc3c0/config" -I "../src/ASF/avr32/utils" -I "../src/ASF/avr32/drivers/gpio" -I "../src/ASF/common/boards" -I "../src/config" -I "../src/ASF/avr32/utils/preprocessor" -I "../src/ASF/avr32/boards/stk600/rcuc3c0" -I "../src/ASF/avr32/drivers/intc" -I "../src/ASF/common/utils" -I "../src" -I "../src/ASF/avr32/boards" -I "../src/ASF/avr32/drivers/cpu/cycle_counter" -I "../src/ASF/avr32/drivers/flashc" -I "../src/ASF/avr32/drivers/usart" -I "../src/ASF/common/services/clock" -I "../src/ASF/common/services/delay" -I "../src/ASF/thirdparty/dlmalloc" -I "../src/ASF/avr32/drivers/twim" -I "../src/ASF/avr32/drivers/twis"  -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)" -Wa,-g   -o "$@" "$<" 
+	$(QUOTE)C:\Program Files (x86)\Atmel\Atmel Toolchain\AVR32 GCC\Native\3.4.1057\avr32-gnu-toolchain\bin\avr32-gcc.exe$(QUOTE) -x assembler-with-cpp -c -mpart=uc3c0512c -mrelax -DBOARD=STK600_RCUC3C0 -I "../common/applications/user_application/at32uc3c0512c_stk600-rcuc3c0/config" -I "../src/ASF/avr32/utils" -I "../src/ASF/avr32/drivers/gpio" -I "../src/ASF/common/boards" -I "../src/config" -I "../src/ASF/avr32/utils/preprocessor" -I "../src/ASF/avr32/boards/stk600/rcuc3c0" -I "../src/ASF/avr32/drivers/intc" -I "../src/ASF/common/utils" -I "../src" -I "../src/ASF/avr32/boards" -I "../src/ASF/avr32/drivers/cpu/cycle_counter" -I "../src/ASF/avr32/drivers/flashc" -I "../src/ASF/avr32/drivers/usart" -I "../src/ASF/common/services/clock" -I "../src/ASF/common/services/delay" -I "../src/ASF/avr32/drivers/twim" -I "../src/ASF/avr32/drivers/twis"  -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)" -Wa,-g   -o "$@" "$<" 
 	@echo Finished building: $<
 	
 
 src/ASF/avr32/drivers/intc/%.o: ../src/ASF/avr32/drivers/intc/%.x
 	@echo Building file: $<
 	@echo Invoking: AVR32/GNU Preprocessing Assembler : 4.4.7
-	$(QUOTE)C:\Program Files (x86)\Atmel\Atmel Toolchain\AVR32 GCC\Native\3.4.1057\avr32-gnu-toolchain\bin\avr32-gcc.exe$(QUOTE) -x assembler-with-cpp -c -mpart=uc3c0512c -mrelax -DBOARD=STK600_RCUC3C0 -I "../common/applications/user_application/at32uc3c0512c_stk600-rcuc3c0/config" -I "../src/ASF/avr32/utils" -I "../src/ASF/avr32/drivers/gpio" -I "../src/ASF/common/boards" -I "../src/config" -I "../src/ASF/avr32/utils/preprocessor" -I "../src/ASF/avr32/boards/stk600/rcuc3c0" -I "../src/ASF/avr32/drivers/intc" -I "../src/ASF/common/utils" -I "../src" -I "../src/ASF/avr32/boards" -I "../src/ASF/avr32/drivers/cpu/cycle_counter" -I "../src/ASF/avr32/drivers/flashc" -I "../src/ASF/avr32/drivers/usart" -I "../src/ASF/common/services/clock" -I "../src/ASF/common/services/delay" -I "../src/ASF/thirdparty/dlmalloc" -I "../src/ASF/avr32/drivers/twim" -I "../src/ASF/avr32/drivers/twis"  -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)" -Wa,-g   -o "$@" "$<" 
+	$(QUOTE)C:\Program Files (x86)\Atmel\Atmel Toolchain\AVR32 GCC\Native\3.4.1057\avr32-gnu-toolchain\bin\avr32-gcc.exe$(QUOTE) -x assembler-with-cpp -c -mpart=uc3c0512c -mrelax -DBOARD=STK600_RCUC3C0 -I "../common/applications/user_application/at32uc3c0512c_stk600-rcuc3c0/config" -I "../src/ASF/avr32/utils" -I "../src/ASF/avr32/drivers/gpio" -I "../src/ASF/common/boards" -I "../src/config" -I "../src/ASF/avr32/utils/preprocessor" -I "../src/ASF/avr32/boards/stk600/rcuc3c0" -I "../src/ASF/avr32/drivers/intc" -I "../src/ASF/common/utils" -I "../src" -I "../src/ASF/avr32/boards" -I "../src/ASF/avr32/drivers/cpu/cycle_counter" -I "../src/ASF/avr32/drivers/flashc" -I "../src/ASF/avr32/drivers/usart" -I "../src/ASF/common/services/clock" -I "../src/ASF/common/services/delay" -I "../src/ASF/avr32/drivers/twim" -I "../src/ASF/avr32/drivers/twis"  -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)" -Wa,-g   -o "$@" "$<" 
 	@echo Finished building: $<
 	
 
 src/ASF/avr32/drivers/intc/%.o: ../src/ASF/avr32/drivers/intc/%.X
 	@echo Building file: $<
 	@echo Invoking: AVR32/GNU Preprocessing Assembler : 4.4.7
-	$(QUOTE)C:\Program Files (x86)\Atmel\Atmel Toolchain\AVR32 GCC\Native\3.4.1057\avr32-gnu-toolchain\bin\avr32-gcc.exe$(QUOTE) -x assembler-with-cpp -c -mpart=uc3c0512c -mrelax -DBOARD=STK600_RCUC3C0 -I "../common/applications/user_application/at32uc3c0512c_stk600-rcuc3c0/config" -I "../src/ASF/avr32/utils" -I "../src/ASF/avr32/drivers/gpio" -I "../src/ASF/common/boards" -I "../src/config" -I "../src/ASF/avr32/utils/preprocessor" -I "../src/ASF/avr32/boards/stk600/rcuc3c0" -I "../src/ASF/avr32/drivers/intc" -I "../src/ASF/common/utils" -I "../src" -I "../src/ASF/avr32/boards" -I "../src/ASF/avr32/drivers/cpu/cycle_counter" -I "../src/ASF/avr32/drivers/flashc" -I "../src/ASF/avr32/drivers/usart" -I "../src/ASF/common/services/clock" -I "../src/ASF/common/services/delay" -I "../src/ASF/thirdparty/dlmalloc" -I "../src/ASF/avr32/drivers/twim" -I "../src/ASF/avr32/drivers/twis"  -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)" -Wa,-g   -o "$@" "$<" 
+	$(QUOTE)C:\Program Files (x86)\Atmel\Atmel Toolchain\AVR32 GCC\Native\3.4.1057\avr32-gnu-toolchain\bin\avr32-gcc.exe$(QUOTE) -x assembler-with-cpp -c -mpart=uc3c0512c -mrelax -DBOARD=STK600_RCUC3C0 -I "../common/applications/user_application/at32uc3c0512c_stk600-rcuc3c0/config" -I "../src/ASF/avr32/utils" -I "../src/ASF/avr32/drivers/gpio" -I "../src/ASF/common/boards" -I "../src/config" -I "../src/ASF/avr32/utils/preprocessor" -I "../src/ASF/avr32/boards/stk600/rcuc3c0" -I "../src/ASF/avr32/drivers/intc" -I "../src/ASF/common/utils" -I "../src" -I "../src/ASF/avr32/boards" -I "../src/ASF/avr32/drivers/cpu/cycle_counter" -I "../src/ASF/avr32/drivers/flashc" -I "../src/ASF/avr32/drivers/usart" -I "../src/ASF/common/services/clock" -I "../src/ASF/common/services/delay" -I "../src/ASF/avr32/drivers/twim" -I "../src/ASF/avr32/drivers/twis"  -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)" -Wa,-g   -o "$@" "$<" 
 	@echo Finished building: $<
 	
 
 src/ASF/avr32/utils/startup/%.o: ../src/ASF/avr32/utils/startup/%.S
 	@echo Building file: $<
 	@echo Invoking: AVR32/GNU Preprocessing Assembler : 4.4.7
-	$(QUOTE)C:\Program Files (x86)\Atmel\Atmel Toolchain\AVR32 GCC\Native\3.4.1057\avr32-gnu-toolchain\bin\avr32-gcc.exe$(QUOTE) -x assembler-with-cpp -c -mpart=uc3c0512c -mrelax -DBOARD=STK600_RCUC3C0 -I "../common/applications/user_application/at32uc3c0512c_stk600-rcuc3c0/config" -I "../src/ASF/avr32/utils" -I "../src/ASF/avr32/drivers/gpio" -I "../src/ASF/common/boards" -I "../src/config" -I "../src/ASF/avr32/utils/preprocessor" -I "../src/ASF/avr32/boards/stk600/rcuc3c0" -I "../src/ASF/avr32/drivers/intc" -I "../src/ASF/common/utils" -I "../src" -I "../src/ASF/avr32/boards" -I "../src/ASF/avr32/drivers/cpu/cycle_counter" -I "../src/ASF/avr32/drivers/flashc" -I "../src/ASF/avr32/drivers/usart" -I "../src/ASF/common/services/clock" -I "../src/ASF/common/services/delay" -I "../src/ASF/thirdparty/dlmalloc" -I "../src/ASF/avr32/drivers/twim" -I "../src/ASF/avr32/drivers/twis"  -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)" -Wa,-g   -o "$@" "$<" 
+	$(QUOTE)C:\Program Files (x86)\Atmel\Atmel Toolchain\AVR32 GCC\Native\3.4.1057\avr32-gnu-toolchain\bin\avr32-gcc.exe$(QUOTE) -x assembler-with-cpp -c -mpart=uc3c0512c -mrelax -DBOARD=STK600_RCUC3C0 -I "../common/applications/user_application/at32uc3c0512c_stk600-rcuc3c0/config" -I "../src/ASF/avr32/utils" -I "../src/ASF/avr32/drivers/gpio" -I "../src/ASF/common/boards" -I "../src/config" -I "../src/ASF/avr32/utils/preprocessor" -I "../src/ASF/avr32/boards/stk600/rcuc3c0" -I "../src/ASF/avr32/drivers/intc" -I "../src/ASF/common/utils" -I "../src" -I "../src/ASF/avr32/boards" -I "../src/ASF/avr32/drivers/cpu/cycle_counter" -I "../src/ASF/avr32/drivers/flashc" -I "../src/ASF/avr32/drivers/usart" -I "../src/ASF/common/services/clock" -I "../src/ASF/common/services/delay" -I "../src/ASF/avr32/drivers/twim" -I "../src/ASF/avr32/drivers/twis"  -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)" -Wa,-g   -o "$@" "$<" 
 	@echo Finished building: $<
 	
 
 src/ASF/avr32/utils/startup/%.o: ../src/ASF/avr32/utils/startup/%.x
 	@echo Building file: $<
 	@echo Invoking: AVR32/GNU Preprocessing Assembler : 4.4.7
-	$(QUOTE)C:\Program Files (x86)\Atmel\Atmel Toolchain\AVR32 GCC\Native\3.4.1057\avr32-gnu-toolchain\bin\avr32-gcc.exe$(QUOTE) -x assembler-with-cpp -c -mpart=uc3c0512c -mrelax -DBOARD=STK600_RCUC3C0 -I "../common/applications/user_application/at32uc3c0512c_stk600-rcuc3c0/config" -I "../src/ASF/avr32/utils" -I "../src/ASF/avr32/drivers/gpio" -I "../src/ASF/common/boards" -I "../src/config" -I "../src/ASF/avr32/utils/preprocessor" -I "../src/ASF/avr32/boards/stk600/rcuc3c0" -I "../src/ASF/avr32/drivers/intc" -I "../src/ASF/common/utils" -I "../src" -I "../src/ASF/avr32/boards" -I "../src/ASF/avr32/drivers/cpu/cycle_counter" -I "../src/ASF/avr32/drivers/flashc" -I "../src/ASF/avr32/drivers/usart" -I "../src/ASF/common/services/clock" -I "../src/ASF/common/services/delay" -I "../src/ASF/thirdparty/dlmalloc" -I "../src/ASF/avr32/drivers/twim" -I "../src/ASF/avr32/drivers/twis"  -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)" -Wa,-g   -o "$@" "$<" 
+	$(QUOTE)C:\Program Files (x86)\Atmel\Atmel Toolchain\AVR32 GCC\Native\3.4.1057\avr32-gnu-toolchain\bin\avr32-gcc.exe$(QUOTE) -x assembler-with-cpp -c -mpart=uc3c0512c -mrelax -DBOARD=STK600_RCUC3C0 -I "../common/applications/user_application/at32uc3c0512c_stk600-rcuc3c0/config" -I "../src/ASF/avr32/utils" -I "../src/ASF/avr32/drivers/gpio" -I "../src/ASF/common/boards" -I "../src/config" -I "../src/ASF/avr32/utils/preprocessor" -I "../src/ASF/avr32/boards/stk600/rcuc3c0" -I "../src/ASF/avr32/drivers/intc" -I "../src/ASF/common/utils" -I "../src" -I "../src/ASF/avr32/boards" -I "../src/ASF/avr32/drivers/cpu/cycle_counter" -I "../src/ASF/avr32/drivers/flashc" -I "../src/ASF/avr32/drivers/usart" -I "../src/ASF/common/services/clock" -I "../src/ASF/common/services/delay" -I "../src/ASF/avr32/drivers/twim" -I "../src/ASF/avr32/drivers/twis"  -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)" -Wa,-g   -o "$@" "$<" 
 	@echo Finished building: $<
 	
 
 src/ASF/avr32/utils/startup/%.o: ../src/ASF/avr32/utils/startup/%.X
 	@echo Building file: $<
 	@echo Invoking: AVR32/GNU Preprocessing Assembler : 4.4.7
-	$(QUOTE)C:\Program Files (x86)\Atmel\Atmel Toolchain\AVR32 GCC\Native\3.4.1057\avr32-gnu-toolchain\bin\avr32-gcc.exe$(QUOTE) -x assembler-with-cpp -c -mpart=uc3c0512c -mrelax -DBOARD=STK600_RCUC3C0 -I "../common/applications/user_application/at32uc3c0512c_stk600-rcuc3c0/config" -I "../src/ASF/avr32/utils" -I "../src/ASF/avr32/drivers/gpio" -I "../src/ASF/common/boards" -I "../src/config" -I "../src/ASF/avr32/utils/preprocessor" -I "../src/ASF/avr32/boards/stk600/rcuc3c0" -I "../src/ASF/avr32/drivers/intc" -I "../src/ASF/common/utils" -I "../src" -I "../src/ASF/avr32/boards" -I "../src/ASF/avr32/drivers/cpu/cycle_counter" -I "../src/ASF/avr32/drivers/flashc" -I "../src/ASF/avr32/drivers/usart" -I "../src/ASF/common/services/clock" -I "../src/ASF/common/services/delay" -I "../src/ASF/thirdparty/dlmalloc" -I "../src/ASF/avr32/drivers/twim" -I "../src/ASF/avr32/drivers/twis"  -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)" -Wa,-g   -o "$@" "$<" 
+	$(QUOTE)C:\Program Files (x86)\Atmel\Atmel Toolchain\AVR32 GCC\Native\3.4.1057\avr32-gnu-toolchain\bin\avr32-gcc.exe$(QUOTE) -x assembler-with-cpp -c -mpart=uc3c0512c -mrelax -DBOARD=STK600_RCUC3C0 -I "../common/applications/user_application/at32uc3c0512c_stk600-rcuc3c0/config" -I "../src/ASF/avr32/utils" -I "../src/ASF/avr32/drivers/gpio" -I "../src/ASF/common/boards" -I "../src/config" -I "../src/ASF/avr32/utils/preprocessor" -I "../src/ASF/avr32/boards/stk600/rcuc3c0" -I "../src/ASF/avr32/drivers/intc" -I "../src/ASF/common/utils" -I "../src" -I "../src/ASF/avr32/boards" -I "../src/ASF/avr32/drivers/cpu/cycle_counter" -I "../src/ASF/avr32/drivers/flashc" -I "../src/ASF/avr32/drivers/usart" -I "../src/ASF/common/services/clock" -I "../src/ASF/common/services/delay" -I "../src/ASF/avr32/drivers/twim" -I "../src/ASF/avr32/drivers/twis"  -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)" -Wa,-g   -o "$@" "$<" 
 	@echo Finished building: $<
 	
 

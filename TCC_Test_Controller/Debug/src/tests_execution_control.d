@@ -94,8 +94,7 @@ src/tests_execution_control.d src/tests_execution_control.o \
  ../src/ASF/common/services/clock/uc3c/pll.h \
  ../src/ASF/common/services/clock/genclk.h \
  ../src/ASF/common/services/clock/uc3c/genclk.h \
- ../src/ASF/avr32/drivers/cpu/cycle_counter/cycle_counter.h \
- ../src/ASF/thirdparty/dlmalloc/dlmalloc.h ../src/config/conf_dlmalloc.h
+ ../src/ASF/avr32/drivers/cpu/cycle_counter/cycle_counter.h
 
 ../src/tests_execution_control.h:
 
@@ -298,7 +297,3 @@ c:\program\ files\ (x86)\atmel\atmel\ toolchain\avr32\ gcc\native\3.4.1057\avr32
 ../src/ASF/common/services/clock/uc3c/genclk.h:
 
 ../src/ASF/avr32/drivers/cpu/cycle_counter/cycle_counter.h:
-
-../src/ASF/thirdparty/dlmalloc/dlmalloc.h:
-
-../src/config/conf_dlmalloc.h:
