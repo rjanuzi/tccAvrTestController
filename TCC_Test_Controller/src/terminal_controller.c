@@ -37,7 +37,7 @@ void manage_command()
 		print_dbg("\n\ni2c all: Executa todos os testes do I2C.");
 		print_dbg("\n\ni2c mtx: Executa o teste da I2C com o CubeComputer como Master Transmitter.");
 		print_dbg("\n\ni2c mrx: Executa o teste da I2C com o CubeComputer como Master Receiver.");
-		print_dbg("\n\ni2c stx: Executa o teste da I2C com o CubeComputer como Slave Transmitter.");
+	//	print_dbg("\n\ni2c stx: Executa o teste da I2C com o CubeComputer como Slave Transmitter.");
 		print_dbg("\n\ni2c srx: Executa o teste da I2C com o CubeComputer como Slave Receiver.");
 		
 		cmd_recognized = true;
@@ -102,7 +102,8 @@ void start_terminal()
 		switch(received_char)
 		{
 			case USART_FAILURE:
-				print_dbg("\nterminal_controller.c - start_terminal - USART_FAILURE - A TRATAR!\n");
+				print_dbg("\nterminal_controller.c - start_terminal - USART_FAILURE");
+				initTerminalInterface();
 				break;
 			case ENTER_CHAR:
 				manage_command();

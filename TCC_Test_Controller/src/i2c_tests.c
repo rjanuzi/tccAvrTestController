@@ -468,7 +468,7 @@ void i2c_test_all()
 {
 	masterTransmitterTest();
 	masterReceiverTest();
-	slaveTransmitterTest();
+//	slaveTransmitterTest();
 	slaveReceiverTest();
 }
 
@@ -476,7 +476,7 @@ void masterTransmitterTest()
 {
 	print_dbg("\n\n==============================\nExecutando i2c mtx...\n==============================\n");
 	
-	int i, j, timeout = 10000000, trys, countAux = 1;
+	int i, j, timeout = 1000000, trys, countAux = 1;
 	char* text;
 	bool testResult = true;
 	
@@ -531,28 +531,26 @@ void masterTransmitterTest()
 void masterReceiverTest()
 {
 	print_dbg("\n\n==============================\nExecutando i2c mrx...\n==============================\n");
-	
-	int i, timeout = 100000000, trys, countAux = 1;
+
+	int i, timeout = 1000000, countAux = 1;
 	cmd_frame_t ansFrame;
 	char* text;
-	bool testResult;
 
 	for(i = 0; i < TEST_CASES_COUNT; i++ )
 	{
 		if(test_cases[i].testType == TEST_TYPE_M_RX)
 		{
-			trys = 0;
 			sentBytesCount = 0;
 			runningMrxTest = i; /* Para que a funcao de interrupcao TxFunction saiba qual teste estah sendo executado. */
-			
+
 			sprintf(text, "\nTest %d...", countAux++);
 			print_dbg(text);
-			
+
 			//Notifica o CC sobre a execucao do teste e envia o comando.
 			sendTestCmdFrame(test_cases[i]);
 			
 			ansFrame = rcvTestCmdAnswer();
-			
+
 			if(ansFrame.magicCode != 0)
 			{
 				if( ansFrame.data[0] == RESULT_TEST_FAIL )
@@ -563,10 +561,6 @@ void masterReceiverTest()
 				{
 					print_dbg( " PASS" );
 				}
-			}
-			else
-			{
-				print_dbg( " MagicCode error! - FAIL" );
 			}
 		}
 	}
@@ -612,10 +606,6 @@ void slaveReceiverTest()
 				{
 					print_dbg( " PASS" );
 				}
-			}
-			else
-			{
-				print_dbg( " MagicCode error! - FAIL" );
 			}
 		}
 	}
