@@ -1,12 +1,6 @@
-/*
- * test_execution_control.c
- *
- * Created: 10/11/2014
- *  Author: Rafael B. Januzi (rjanuzi@gmail.com)
- */
-
 #include <tests_execution_control.h>
 
+/* Variavel com a configuracao da USART utilizada no controle dos testes. */
 const usart_options_t TESTS_EXECUTION_CONTROL =
 {
 	.baudrate = TESTS_EXEC_CTRL_UART_BAUD,
@@ -33,9 +27,11 @@ void printfCmd(cmd_frame_t frame)
 
 void initTestsExecContrInterface()
 {
+	/* Inicializa os GPIOs alocados para a USART de controle. */
 	gpio_enable_module_pin( USART0_1_TX_PIN, USART0_1_TX_FUNCTION );
 	gpio_enable_module_pin( USART0_1_RX_PIN, USART0_1_RX_FUNCTION );
 	
+	/* Inicializa o controlador da USART de controle de testes. */
 	if( usart_init_rs232( TESTS_EXEC_CTRL_UART, &TESTS_EXECUTION_CONTROL, CPU_HZ ) == USART_SUCCESS )
 		gpio_set_pin_low( ITASAT_LED1 );
 }
@@ -45,26 +41,15 @@ cmd_frame_t newEmptyTestCmdFrame(uint8_t testType, uint8_t dataSize)
 	cmd_frame_t newFrame;
 	int i = 0;
 	
-	newFrame.magicCode = 0x3C7E;
+	newFrame.magicCode = MAGIC_CODE_CMDS;
 	newFrame.testType = testType;
 	newFrame.dataSize = dataSize;
 	
+	/* Preenche o array de dados com 0. */
 	for(i = 0; i < dataSize; i++)
 		newFrame.data[i] = 0;
 	
 	return newFrame;
-}
-
-void freeCmdFrame(cmd_frame_t frame)
-{
-	int i;
-	
-	frame.magicCode = 0;
-	frame.dataSize = 0;
-	frame.testType = 0;
-	
-	for(i = 0; i < frame.dataSize; i++)
-		frame.data[i] = 0;
 }
 
 void sendTestCmdFrame(cmd_frame_t frame)
@@ -120,10 +105,25 @@ cmd_frame_t rcvTestCmdAnswer()
 	cmd_frame_t cmdAwsFrameRcv;
 	
 	while(rcvAnswerFlag == 0)
-	{		
+	{
+		/* O timeout faz com que o sistema nao trave aguardando uma resposta */
 		rcvByte = usart_getchar_timeout( TESTS_EXEC_CTRL_UART );
+		
+		/*
+		 *	Na configuracao do sistema de testes eh interessante analizar 
+		 * qual o maior tempo que o dispositivo de teste pode levar para 
+		 * enviar uma resposta. Caso esse tempo seja maior que o timeout
+		 * utilizado na funcao usat_getchar_timeout() o sistema nunca 
+		 * recebera uma resposta corretamente. Em caso de duvidas em 
+		 * relacao a esse tipo de problem, pode-se utilizar a funcao
+		 * usart_getchar() que nao possui timeout e aguarda indefinidamente.
+		 */
 		//rcvByte = usart_getchar( TESTS_EXEC_CTRL_UART );
 		
+		/* 
+		 *	Caso receba um byte com erro, exibe uma mensagem e reinicia 
+		 * o sistema de testes.
+		 */
 		if(rcvByte == USART_TIMEOUT || rcvByte == USART_FAILURE)
 		{
 			print_dbg("\n\ntests_execution_control - rcvTestCmdAnswer - USART_TIMEOUT OR USART_FAILURE");
@@ -133,6 +133,11 @@ cmd_frame_t rcvTestCmdAnswer()
 			return cmdAwsFrameRcv;
 		}
 
+		/* 
+		 *	Implementacao de um automato para identificacao dos 
+		 * bytes recebidos e preenchimento do pacote de resposta
+		 * recebido.
+		 */
 		switch( automataState )
 		{
 		case 1:

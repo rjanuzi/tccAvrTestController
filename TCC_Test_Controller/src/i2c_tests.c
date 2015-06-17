@@ -1,13 +1,10 @@
-/*
- * i2c_tests.c
- *
- * Created: 29/09/2014
- *  Author: Rafael B. Januzi (rjanuzi@gmail.com)
- */ 
-
 #include <i2c_tests.h>
 #include <tests_execution_control.h>
 
+/* 
+ *	Array do tipo cmd_frame_t que reune os casos de 
+ * teste implementados no sistema de testes.
+ */
 const cmd_frame_t test_cases[TEST_CASES_COUNT] =
 {
 	{	
@@ -399,23 +396,28 @@ const cmd_frame_t test_cases[TEST_CASES_COUNT] =
 	}
 };
 
+/* Buffer para armazenamento temporario dos bytes transmitidos no teste. */
 uint8_t i2cBytesBuffer[DATA_MAX_SIZE];
-uint8_t receivedBytesCount = 0, sentBytesCount = 0, runningMrxTest = 0;
-bool transmissionEnded = false;
 
+/* Flags de controle para execucao dos testes. */
+uint8_t receivedBytesCount = 0, sentBytesCount = 0, runningMrxTest = 0;
+static volatile bool transmissionEnded = false;
+
+/* Configuracao Slave do controlador I2C utilizado. */
 const twis_options_t TWIS_OPTIONS = {
 	.pba_hz = 16000000,		/* 16 MHz */
 	.speed = 400000,		/* 400 KHz */
 	.chip = AVR_ADDRESS,	/* Endereco desse Slave */
-	.smbus = false,			/* Modo SMBUS serah utilizado */
-	.tenbit = false			/* Serah utilizado endereco de 10 bits */
+	.smbus = false,			/* Modo SMBUS nao serah utilizado */
+	.tenbit = false			/* Serah utilizado endereco de 7 bits */
 };
 
+/* Configuracao Master do controlador I2C utilizado. */
 const twim_options_t TWIM_OPTIONS = {
 	.chip = 	CUBE_COMPUTER_ADDRESS ,		/* Endereco desse Master, utilizado apenas em um simples teste na inicializacao do controlador TWIM */
 	.pba_hz = 	16000000, 					/* PBA Div = 1 no arquivo de configuracao do clock */
 	.smbus = 	false, 						/* Nao iremos utilizar o modo SMBUS */
-	.speed = 	400000 						/* Velocidade da transmissao */
+	.speed = 	400000 						/* 400 KHz */
 };
 
 /* Funcoes para controle das transmissoes */
@@ -427,29 +429,33 @@ const twis_slave_fct_t TWIS_FUNCTIONS = {
 
 void initI2CTestsInterface()
 {
+	/* Inicializacao dos GPIOs alocados ao controlador I2C. */
 	gpio_enable_module_pin( TWIS0_1_TWD_PIN, TWIS0_1_TWD_FUNCTION );
 	gpio_enable_module_pin( TWIS0_1_TWCK_PIN, TWIS0_1_TWCK_FUNCTION );
 	
+	/* Inicializacao do controlador como Slave. */
 	if( STATUS_OK == twis_slave_init( TWI_SLAVE, &TWIS_OPTIONS, &TWIS_FUNCTIONS ))
 		gpio_set_pin_low( ITASAT_LED2 );
 
+	/* Inicializacao do controlador como Master. */
 	if( STATUS_OK == twim_master_init( TWI_MASTER, &TWIM_OPTIONS ))
 		gpio_set_pin_low( ITASAT_LED3 );
 }
 
-/* TODO - Add Text */
 void RxFunction( uint8_t ReceivedData )
 {
+	/* Armazena o byte recebido temporariamente na posicao adequada do buffer. */
 	i2cBytesBuffer[receivedBytesCount++] = ReceivedData;
 	
 	gpio_tgl_gpio_pin(ITASAT_LED7);
 }
 
-/* TODO - Add Text */
 uint8_t TxFunction()
 {
+	/* Armazena temporariamente o byte a ser enviado durante o teste. */
 	uint8_t byteToSend = test_cases[runningMrxTest].data[sentBytesCount];
 	
+	/* Incrementa a posicao do proximo byte a ser transmitidos. */
 	sentBytesCount++;
 	
 	gpio_tgl_gpio_pin(ITASAT_LED6);
@@ -457,9 +463,9 @@ uint8_t TxFunction()
 	return byteToSend; /* Envia o byte de numero sentBytesCount do teste em andamento */
 }
 
-/* TODO - Add Text */
 void StopFunction()
 {
+	/* Sinaliza que a transmissao terminou. */
 	transmissionEnded = true;	
 	gpio_tgl_gpio_pin(ITASAT_LED5);
 }
@@ -468,7 +474,6 @@ void i2c_test_all()
 {
 	masterTransmitterTest();
 	masterReceiverTest();
-//	slaveTransmitterTest();
 	slaveReceiverTest();
 }
 
@@ -564,12 +569,6 @@ void masterReceiverTest()
 			}
 		}
 	}
-}
-
-void slaveTransmitterTest()
-{
-	print_dbg("\n\n==============================\nExecutando i2c stx...\n==============================\n");
-	print_dbg("\nFAIL - Nao implementado");
 }
 
 void slaveReceiverTest()
